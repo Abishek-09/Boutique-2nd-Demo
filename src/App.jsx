@@ -1,6 +1,9 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
 import { ShopProvider, useShop } from './context/ShopContext';
+import { AdminProvider } from './admin/context/AdminContext';
+
+// Customer Storefront Components & Pages
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import CartDrawer from './components/CartDrawer';
@@ -15,45 +18,38 @@ import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import CheckoutPage from './pages/CheckoutPage';
 
+// Admin Components & Pages
+import AdminLogin from './admin/pages/AdminLogin';
+import AdminLayout from './admin/components/AdminLayout';
+import ProtectedRoute from './admin/components/ProtectedRoute';
+import DashboardPage from './admin/pages/DashboardPage';
+import ProductsPage from './admin/pages/ProductsPage';
+import OrdersPage from './admin/pages/OrdersPage';
+import ContentPage from './admin/pages/ContentPage';
+import SubscribersPage from './admin/pages/SubscribersPage';
+
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check } from 'lucide-react';
 
-function AppContent() {
+// Customer Storefront Layout Wrapper
+function StorefrontLayout() {
   const { toastMessage } = useShop();
 
   return (
     <div className="min-h-screen bg-[#F9F6F0] text-[#383028] flex flex-col selection:bg-[#C8906D] selection:text-white">
-      {/* Scroll restoration helper */}
       <ScrollToTop />
-
-      {/* Sticky Header with navigation links and actions */}
       <Navbar />
 
-      {/* Main Routed Page Content */}
       <main className="flex-grow">
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/shop" element={<ShopPage />} />
-          <Route path="/collections" element={<CollectionsPage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="/checkout" element={<CheckoutPage />} />
-        </Routes>
+        <Outlet />
       </main>
 
-      {/* Footer with links and external social tabs */}
       <Footer />
-
-      {/* Action: Slide-out Cart Drawer */}
       <CartDrawer />
-
-      {/* Action: Full-Screen Overlay Search Bar */}
       <SearchModal />
-
-      {/* Action: Login / Register Modal */}
       <AuthModal />
 
-      {/* Toast Notification for Form Submissions & Actions */}
+      {/* Storefront Toast */}
       <AnimatePresence>
         {toastMessage && (
           <motion.div
@@ -76,9 +72,35 @@ function AppContent() {
 function App() {
   return (
     <Router>
-      <ShopProvider>
-        <AppContent />
-      </ShopProvider>
+      <AdminProvider>
+        <ShopProvider>
+          <Routes>
+            {/* Admin Authentication Screen */}
+            <Route path="/admin/login" element={<AdminLogin />} />
+
+            {/* Protected Admin Console Routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/admin" element={<AdminLayout />}>
+                <Route index element={<DashboardPage />} />
+                <Route path="products" element={<ProductsPage />} />
+                <Route path="orders" element={<OrdersPage />} />
+                <Route path="content" element={<ContentPage />} />
+                <Route path="subscribers" element={<SubscribersPage />} />
+              </Route>
+            </Route>
+
+            {/* Customer Storefront Routes */}
+            <Route element={<StorefrontLayout />}>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/shop" element={<ShopPage />} />
+              <Route path="/collections" element={<CollectionsPage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/checkout" element={<CheckoutPage />} />
+            </Route>
+          </Routes>
+        </ShopProvider>
+      </AdminProvider>
     </Router>
   );
 }
