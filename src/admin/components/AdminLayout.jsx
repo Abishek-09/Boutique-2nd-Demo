@@ -5,6 +5,7 @@ import Topbar from './Topbar';
 import { useAdmin } from '../context/AdminContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, AlertCircle } from 'lucide-react';
+import ScrollToTop from '../../components/ScrollToTop';
 
 const AdminLayout = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -12,6 +13,7 @@ const AdminLayout = () => {
 
   return (
     <div className="min-h-screen bg-[#F9F6F0] font-sans text-[#383028] flex flex-col selection:bg-[#C8906D] selection:text-white">
+      <ScrollToTop />
       {/* Sidebar: Fixed Dark Emerald #174A43 */}
       <Sidebar isMobileOpen={isMobileOpen} setIsMobileOpen={setIsMobileOpen} />
 
@@ -33,7 +35,7 @@ const AdminLayout = () => {
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className={`fixed bottom-6 right-6 z-50 flex items-center space-x-3 px-5 py-3.5 rounded-xl text-white shadow-2xl border ${
+            className={`fixed bottom-20 right-6 sm:bottom-24 sm:right-8 z-50 flex items-center space-x-3 px-5 py-3.5 rounded-xl text-white shadow-2xl border ${
               toast.type === 'error'
                 ? 'bg-red-800 border-red-500/40'
                 : 'bg-[#174A43] border-[#DBC3A5]/40'

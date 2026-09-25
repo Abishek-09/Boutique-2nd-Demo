@@ -1,11 +1,8 @@
 import React from 'react';
-import { ArrowUp, Instagram, Facebook, Twitter, Pin as Pinterest, MapPin, Phone, Mail } from 'lucide-react';
+import { Instagram, Facebook, Twitter, Pin as Pinterest, MapPin, Phone, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Footer = () => {
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
 
   const navLinks = [
     { name: 'Home', path: '/' },
@@ -162,29 +159,17 @@ const Footer = () => {
 
         </div>
 
-        {/* Bottom Bar: Copyright & Back to Top */}
-        <div className="pt-8 flex flex-col md:flex-row items-center justify-between text-xs text-[#DBC3A5]/70 font-sans gap-4 text-center">
+        {/* Bottom Bar: Copyright & Policy Links */}
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-[#DBC3A5]/70 font-sans gap-4 text-center">
           <p>© 2026 Lumière Atelier. All rights reserved.</p>
 
-          <div className="flex items-center space-x-6">
+          <div className="flex flex-wrap items-center justify-center space-x-6">
             <Link to="/about" className="hover:text-white transition-colors">Privacy Policy</Link>
             <span className="text-[#DBC3A5]/30">•</span>
             <Link to="/about" className="hover:text-white transition-colors">Terms of Service</Link>
             <span className="text-[#DBC3A5]/30">•</span>
             <Link to="/collections" className="hover:text-white transition-colors">Atelier Lookbook</Link>
           </div>
-
-          <button
-            type="button"
-            onClick={scrollToTop}
-            aria-label="Scroll to top of page"
-            className="group flex items-center space-x-2 text-[#DBC3A5] hover:text-white transition-colors"
-          >
-            <span>Top</span>
-            <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-[#A95732] transition-colors">
-              <ArrowUp className="w-3.5 h-3.5" />
-            </div>
-          </button>
         </div>
 
       </div>

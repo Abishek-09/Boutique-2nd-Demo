@@ -59,7 +59,7 @@ function StorefrontLayout() {
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="fixed bottom-6 right-6 z-50 flex items-center space-x-3 px-5 py-3.5 rounded-xl bg-[#174A43] text-white shadow-2xl border border-[#DBC3A5]/40"
+            className="fixed bottom-20 right-6 sm:bottom-24 sm:right-8 z-50 flex items-center space-x-3 px-5 py-3.5 rounded-xl bg-[#174A43] text-white shadow-2xl border border-[#DBC3A5]/40"
           >
             <div className="w-6 h-6 rounded-full bg-[#C8906D] flex items-center justify-center text-white flex-shrink-0">
               <Check className="w-3.5 h-3.5 stroke-[2.5]" />
