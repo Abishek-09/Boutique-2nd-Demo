@@ -1,4 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { adminService } from '../admin/services/api';
+import { products as fallbackProducts } from '../data/products';
 
 const ShopContext = createContext();
 
@@ -8,6 +10,49 @@ export const ShopProvider = ({ children }) => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [toastMessage, setToastMessage] = useState('');
+  const [products, setProducts] = useState(fallbackProducts);
+  const [offerBanner, setOfferBanner] = useState({
+    enabled: true,
+    text: 'Festive Season Grandeur: Complimentary Silk Stole on Orders Above ₹20,000 | Code: LUMIERE20',
+    link: '/offers',
+    bgColor: '#C8906D',
+    badgeText: 'FESTIVE SALE',
+    endDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+  });
+
+  const refreshShopData = useCallback(async () => {
+    try {
+      const [prods, banner] = await Promise.all([
+        adminService.getProducts(),
+        adminService.getOfferBanner(),
+      ]);
+      if (prods && prods.length > 0) {
+        setProducts(prods);
+      }
+      if (banner) {
+        setOfferBanner(banner);
+      }
+    } catch (e) {
+      console.error('Error fetching shop data:', e);
+    }
+  }, []);
+
+  useEffect(() => {
+    refreshShopData();
+
+    // Listen to changes from Admin console
+    const handleStorageChange = () => {
+      refreshShopData();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('lumiere-data-updated', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('lumiere-data-updated', handleStorageChange);
+    };
+  }, [refreshShopData]);
 
   // Initial cart with sample boutique items for demo
   const [cart, setCart] = useState([
@@ -15,7 +60,8 @@ export const ShopProvider = ({ children }) => {
       id: 1,
       name: 'The Emerald Noor Lehenga',
       category: "Women's Couture",
-      price: 34500,
+      price: 30400,
+      originalPrice: 34500,
       quantity: 1,
       image: '/images/hero.jpg',
     },
@@ -23,7 +69,8 @@ export const ShopProvider = ({ children }) => {
       id: 5,
       name: 'Artisanal Zardozi Velvet Minaudière Clutch',
       category: 'Artisanal Accessories',
-      price: 8500,
+      price: 6800,
+      originalPrice: 8500,
       quantity: 1,
       image: '/images/accessories.jpg',
     },
@@ -37,6 +84,10 @@ export const ShopProvider = ({ children }) => {
   };
 
   const addToCart = (product, quantity = 1) => {
+    const finalPrice =
+      product.isOnOffer && product.discountPrice ? Number(product.discountPrice) : Number(product.price);
+    const originalPrice = product.isOnOffer && product.discountPrice ? Number(product.price) : (product.originalPrice || null);
+
     setCart((prev) => {
       const existing = prev.find((item) => item.id === product.id);
       if (existing) {
@@ -44,7 +95,15 @@ export const ShopProvider = ({ children }) => {
           item.id === product.id ? { ...item, quantity: item.quantity + quantity } : item
         );
       } else {
-        return [...prev, { ...product, quantity }];
+        return [
+          ...prev,
+          {
+            ...product,
+            price: finalPrice,
+            originalPrice,
+            quantity,
+          },
+        ];
       }
     });
     showToast(`Added "${product.name}" to your shopping bag.`);
@@ -103,6 +162,9 @@ export const ShopProvider = ({ children }) => {
         logout,
         toastMessage,
         showToast,
+        products,
+        offerBanner,
+        refreshShopData,
       }}
     >
       {children}

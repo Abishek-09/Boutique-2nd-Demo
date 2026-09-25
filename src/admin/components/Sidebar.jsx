@@ -6,6 +6,7 @@ import {
   ShoppingBag,
   FileEdit,
   Users,
+  Tag,
   LogOut,
   ExternalLink,
   Shield,
@@ -21,6 +22,7 @@ const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
   const navItems = [
     { name: 'Dashboard', path: '/admin', icon: LayoutDashboard, end: true },
     { name: 'Products', path: '/admin/products', icon: Package },
+    { name: 'Offers & Promotions', path: '/admin/offers', icon: Tag },
     { name: 'Orders', path: '/admin/orders', icon: ShoppingBag },
     { name: 'Content (CMS)', path: '/admin/content', icon: FileEdit },
     { name: 'Subscribers', path: '/admin/subscribers', icon: Users },

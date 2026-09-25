@@ -1,94 +1,75 @@
 import React, { useState, useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, Eye, Sparkles, Filter, X, Check } from 'lucide-react';
+import { ShoppingBag, Eye, Sparkles, Filter, X, ArrowRight, Star } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
 
 const categories = [
-  { id: 'all', label: 'All Silhouettes' },
+  { id: 'all', label: 'All New Arrivals' },
   { id: 'women', label: "Women's Couture" },
   { id: 'men', label: "Gentlemen's Royal Edit" },
   { id: 'jewellery', label: 'Fine Jewellery' },
   { id: 'accessories', label: 'Artisanal Accessories' },
 ];
 
-const ShopPage = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const categoryParam = searchParams.get('category') || 'all';
-  const searchQuery = searchParams.get('search') || '';
-
-  const [activeCategory, setActiveCategory] = useState(categoryParam);
-  const [sortBy, setSortBy] = useState('featured');
-  const [quickViewProduct, setQuickViewProduct] = useState(null);
+const NewArrivalsPage = () => {
   const { products, addToCart } = useShop();
+  const [activeCategory, setActiveCategory] = useState('all');
+  const [sortBy, setSortBy] = useState('newest');
+  const [quickViewProduct, setQuickViewProduct] = useState(null);
 
-  // Sync category if URL param changes
-  React.useEffect(() => {
-    setActiveCategory(categoryParam);
-  }, [categoryParam]);
-
-  const handleCategoryChange = (catId) => {
-    setActiveCategory(catId);
-    if (catId === 'all') {
-      searchParams.delete('category');
-    } else {
-      searchParams.set('category', catId);
-    }
-    setSearchParams(searchParams);
-  };
-
-  const filteredProducts = useMemo(() => {
+  // Filter only products marked as new arrival
+  const newArrivalProducts = useMemo(() => {
     return products
-      .filter((p) => {
-        const matchesCategory = activeCategory === 'all' || p.category === activeCategory;
-        const matchesSearch =
-          !searchQuery ||
-          p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          p.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          p.categoryName.toLowerCase().includes(searchQuery.toLowerCase());
-        return matchesCategory && matchesSearch;
-      })
+      .filter((p) => p.isNewArrival === true)
+      .filter((p) => activeCategory === 'all' || p.category === activeCategory)
       .sort((a, b) => {
         if (sortBy === 'low-high') return a.price - b.price;
         if (sortBy === 'high-low') return b.price - a.price;
-        return a.id - b.id;
+        return b.id - a.id;
       });
-  }, [activeCategory, searchQuery, sortBy]);
+  }, [products, activeCategory, sortBy]);
 
   return (
-    <div className="bg-[#F9F6F0] min-h-screen py-12 sm:py-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Page Banner / Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
-          <div className="inline-flex items-center space-x-2 text-xs font-sans tracking-[0.25em] text-[#C8906D] uppercase font-semibold mb-3">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>THE ATELIER ARCHIVE</span>
-          </div>
-          <h1 className="font-serif text-4xl sm:text-5xl text-[#174A43] font-normal tracking-tight mb-4">
-            Curated Boutique Catalog
-          </h1>
-          <p className="font-sans text-sm sm:text-base text-[#383028]/80 font-light leading-relaxed">
-            Every piece is hand-selected and crafted with artisanal mastery. From royal brocades to heirloom Colombian emerald jewellery.
-          </p>
+    <div className="bg-[#F9F6F0] min-h-screen">
+      {/* Hero Section */}
+      <section className="relative bg-[#174A43] text-white overflow-hidden py-16 sm:py-24 border-b border-[#DBC3A5]/20">
+        {/* Subtle patterned background overlay */}
+        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#DBC3A5_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
 
-          {searchQuery && (
-            <div className="mt-4 inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-[#174A43] text-white text-xs">
-              <span>Search query: &ldquo;{searchQuery}&rdquo;</span>
-              <button
-                type="button"
-                onClick={() => {
-                  searchParams.delete('search');
-                  setSearchParams(searchParams);
-                }}
-                className="text-[#DBC3A5] hover:text-white"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          )}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#C8906D]/20 border border-[#C8906D]/40 text-[#DBC3A5] text-[11px] font-sans tracking-[0.25em] uppercase font-semibold mb-4"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-[#C8906D]" />
+            <span>THE CURATED EDIT &bull; FRESH OFF THE LOOMS</span>
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="font-serif text-4xl sm:text-6xl font-normal tracking-tight text-white mb-4"
+          >
+            Just Dropped: New Arrivals
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="font-sans text-sm sm:text-base text-[#DBC3A5]/90 max-w-2xl mx-auto font-light leading-relaxed"
+          >
+            Explore our most recent handcrafted silhouettes. Intricate zardozi needlework,
+            handwoven Banarasi silks, and bespoke heirloom jewellery straight from master artisans.
+          </motion.p>
         </div>
+      </section>
 
+      {/* Main Content Area */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
         {/* Filter and Sort Toolbar */}
         <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 pb-8 border-b border-[#DBC3A5]/40 mb-10">
           {/* Category Tabs */}
@@ -97,7 +78,7 @@ const ShopPage = () => {
               <button
                 key={cat.id}
                 type="button"
-                onClick={() => handleCategoryChange(cat.id)}
+                onClick={() => setActiveCategory(cat.id)}
                 className={`px-5 py-2.5 rounded-full text-xs font-sans uppercase tracking-wider transition-all duration-300 ${
                   activeCategory === cat.id
                     ? 'bg-[#174A43] text-white shadow-md'
@@ -119,32 +100,32 @@ const ShopPage = () => {
               onChange={(e) => setSortBy(e.target.value)}
               className="px-4 py-2 rounded-xl bg-white border border-[#DBC3A5]/40 text-xs font-sans text-[#174A43] focus:outline-none focus:ring-1 focus:ring-[#C8906D]"
             >
-              <option value="featured">Atelier Curated</option>
+              <option value="newest">Latest Release</option>
               <option value="low-high">Price: Low to High</option>
               <option value="high-low">Price: High to Low</option>
             </select>
           </div>
         </div>
 
-        {/* Product Grid */}
-        {filteredProducts.length === 0 ? (
-          <div className="text-center py-20 bg-white/50 rounded-2xl border border-[#DBC3A5]/30">
+        {/* 4-Column Product Grid */}
+        {newArrivalProducts.length === 0 ? (
+          <div className="text-center py-20 bg-white/60 rounded-2xl border border-[#DBC3A5]/30">
             <Sparkles className="w-10 h-10 text-[#C8906D] mx-auto mb-3" />
-            <h3 className="font-serif text-2xl text-[#174A43]">No silhouettes found</h3>
+            <h3 className="font-serif text-2xl text-[#174A43]">No new releases in this category yet</h3>
             <p className="font-sans text-xs text-[#383028]/70 mt-1 max-w-sm mx-auto">
-              Please try adjusting your category selection or clear your active search query.
+              Our master weavers are currently curating more pieces. Check back soon or view all new arrivals.
             </p>
             <button
               type="button"
-              onClick={() => handleCategoryChange('all')}
-              className="mt-6 px-6 py-2.5 rounded-xl bg-[#A95732] text-white text-xs uppercase tracking-wider font-sans font-medium"
+              onClick={() => setActiveCategory('all')}
+              className="mt-6 px-6 py-2.5 rounded-xl bg-[#A95732] text-white text-xs uppercase tracking-wider font-sans font-medium hover:bg-[#8f4320] transition-colors"
             >
-              View All Pieces
+              Show All New Arrivals
             </button>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-            {filteredProducts.map((product, index) => (
+            {newArrivalProducts.map((product, index) => (
               <motion.div
                 key={product.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -163,21 +144,14 @@ const ShopPage = () => {
                   {/* Gradient Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-                  {/* Top Badges */}
-                  <div className="absolute top-3 left-3 flex flex-wrap gap-1.5 items-center">
-                    {product.isNewArrival && (
-                      <span className="px-2.5 py-1 rounded-md bg-[#C8906D] text-white text-[10px] font-sans font-bold uppercase tracking-widest shadow-md">
-                        NEW
-                      </span>
-                    )}
+                  {/* Top Left Badge: Terracotta "NEW" Badge */}
+                  <div className="absolute top-3 left-3 flex items-center space-x-1">
+                    <span className="px-2.5 py-1 rounded-md bg-[#C8906D] text-white text-[10px] font-sans font-bold uppercase tracking-widest shadow-md border border-white/20">
+                      NEW
+                    </span>
                     {product.isOnOffer && (
-                      <span className="px-2.5 py-1 rounded-md bg-[#A95732] text-white text-[10px] font-sans font-bold uppercase tracking-wider shadow-md">
+                      <span className="px-2 py-1 rounded-md bg-[#A95732] text-white text-[10px] font-sans font-bold uppercase tracking-wider shadow-md">
                         SALE
-                      </span>
-                    )}
-                    {!product.isNewArrival && !product.isOnOffer && product.tag && (
-                      <span className="px-2.5 py-1 rounded-md bg-[#174A43]/85 backdrop-blur-md border border-[#DBC3A5]/30 text-[10px] uppercase tracking-widest text-[#DBC3A5] font-sans font-medium">
-                        {product.tag}
                       </span>
                     )}
                   </div>
@@ -205,7 +179,7 @@ const ShopPage = () => {
                       {product.name}
                     </h3>
                     <p className="text-xs font-sans text-[#383028]/70 mt-1 line-clamp-2 font-light">
-                      {product.fabric}
+                      {product.fabric || product.description}
                     </p>
                   </div>
 
@@ -216,7 +190,7 @@ const ShopPage = () => {
                           <span className="font-serif text-lg font-bold text-[#A95732]">
                             ₹{product.discountPrice.toLocaleString()}
                           </span>
-                          <span className="text-xs text-[#A95732]/70 line-through font-sans">
+                          <span className="text-xs text-[#383028]/50 line-through font-sans">
                             ₹{product.price.toLocaleString()}
                           </span>
                         </div>
@@ -248,7 +222,6 @@ const ShopPage = () => {
             ))}
           </div>
         )}
-
       </div>
 
       {/* Quick View Modal */}
@@ -260,7 +233,7 @@ const ShopPage = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setQuickViewProduct(null)}
-              className="fixed inset-0 bg-black/70 backdrop-blur-sm"
+              className="fixed inset-0 bg-black/60 backdrop-blur-xs"
             />
 
             <div className="min-h-screen px-4 flex items-center justify-center py-12">
@@ -273,18 +246,23 @@ const ShopPage = () => {
                 <button
                   type="button"
                   onClick={() => setQuickViewProduct(null)}
-                  className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/80 hover:bg-white text-[#174A43] shadow-md"
+                  className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/80 hover:bg-white text-[#174A43] shadow-md focus:outline-none"
                 >
                   <X className="w-5 h-5" />
                 </button>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2">
-                  <div className="aspect-[3/4] bg-gray-100">
+                  <div className="aspect-[3/4] bg-gray-100 relative">
                     <img
                       src={quickViewProduct.image}
                       alt={quickViewProduct.name}
                       className="w-full h-full object-cover"
                     />
+                    <div className="absolute top-3 left-3">
+                      <span className="px-2.5 py-1 rounded-md bg-[#C8906D] text-white text-[10px] font-sans font-bold uppercase tracking-widest shadow-md">
+                        NEW
+                      </span>
+                    </div>
                   </div>
 
                   <div className="p-6 sm:p-8 flex flex-col justify-between">
@@ -295,18 +273,40 @@ const ShopPage = () => {
                       <h3 className="font-serif text-2xl text-[#174A43] font-normal mt-1">
                         {quickViewProduct.name}
                       </h3>
-                      <p className="font-serif text-xl font-semibold text-[#A95732] mt-2">
-                        ₹{quickViewProduct.price.toLocaleString()}
-                      </p>
+
+                      {quickViewProduct.isOnOffer && quickViewProduct.discountPrice ? (
+                        <div className="flex items-baseline space-x-2 mt-2">
+                          <p className="font-serif text-2xl font-bold text-[#A95732]">
+                            ₹{quickViewProduct.discountPrice.toLocaleString()}
+                          </p>
+                          <p className="text-sm text-[#383028]/50 line-through font-sans">
+                            ₹{quickViewProduct.price.toLocaleString()}
+                          </p>
+                        </div>
+                      ) : (
+                        <p className="font-serif text-2xl font-semibold text-[#174A43] mt-2">
+                          ₹{quickViewProduct.price.toLocaleString()}
+                        </p>
+                      )}
 
                       <p className="text-xs font-sans text-[#383028]/80 mt-4 leading-relaxed font-light">
                         {quickViewProduct.description}
                       </p>
 
                       <div className="mt-4 pt-4 border-t border-[#DBC3A5]/30 space-y-1 text-xs font-sans text-[#383028]/80">
-                        <div><strong>Craft Technique:</strong> {quickViewProduct.craft}</div>
-                        <div><strong>Fabric &amp; Weave:</strong> {quickViewProduct.fabric}</div>
-                        <div><strong>Origin:</strong> Certified Handloom Guild, India</div>
+                        {quickViewProduct.craft && (
+                          <div>
+                            <strong>Craft Technique:</strong> {quickViewProduct.craft}
+                          </div>
+                        )}
+                        {quickViewProduct.fabric && (
+                          <div>
+                            <strong>Fabric &amp; Weave:</strong> {quickViewProduct.fabric}
+                          </div>
+                        )}
+                        <div>
+                          <strong>Provenance:</strong> Certified Authentic Atelier
+                        </div>
                       </div>
                     </div>
 
@@ -334,4 +334,4 @@ const ShopPage = () => {
   );
 };
 
-export default ShopPage;
+export default NewArrivalsPage;

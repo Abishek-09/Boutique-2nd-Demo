@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Search, User, ShoppingBag, Menu, X, ArrowRight } from 'lucide-react';
+import { Search, User, ShoppingBag, Menu, X, ArrowRight, Flame } from 'lucide-react';
 import { NavLink, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useShop } from '../context/ShopContext';
+import GlobalOfferBanner from './GlobalOfferBanner';
 
 const Navbar = () => {
   const { cartCount, setIsCartOpen, setIsSearchOpen, setIsAuthModalOpen, user } = useShop();
@@ -20,6 +21,8 @@ const Navbar = () => {
   const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'Shop', path: '/shop' },
+    { name: 'New Arrivals', path: '/new-arrivals' },
+    { name: 'Offers', path: '/offers', isOffer: true },
     { name: 'Collections', path: '/collections' },
     { name: 'About', path: '/about' },
     { name: 'Contact', path: '/contact' },
@@ -27,7 +30,10 @@ const Navbar = () => {
 
   return (
     <>
-      {/* Top Banner / Announcement Bar */}
+      {/* Global Offer Promotion Ribbon (Managed by Admin) */}
+      <GlobalOfferBanner />
+
+      {/* Top Banner / Complimentary Shipping Bar */}
       <div className="bg-[#123632] text-[#DBC3A5] text-[11px] sm:text-xs py-2 px-4 text-center font-medium tracking-widest uppercase border-b border-[#DBC3A5]/10">
         Complimentary Bespoke Consultation &amp; Worldwide Shipping on Orders Above ₹1,999
       </div>
@@ -50,13 +56,13 @@ const Navbar = () => {
             </Link>
 
             {/* Center: React Router Desktop Navigation Links */}
-            <nav className="hidden md:flex items-center space-x-8 lg:space-x-10">
+            <nav className="hidden md:flex items-center space-x-6 lg:space-x-8">
               {navLinks.map((link) => (
                 <NavLink
                   key={link.name}
                   to={link.path}
                   className={({ isActive }) =>
-                    `text-sm tracking-widest uppercase font-sans font-normal transition-colors relative py-1 group ${
+                    `text-xs lg:text-sm tracking-widest uppercase font-sans font-normal transition-colors relative py-1 flex items-center space-x-1.5 group ${
                       isActive ? 'text-[#DBC3A5]' : 'text-white/90 hover:text-[#DBC3A5]'
                     }`
                   }
@@ -64,6 +70,14 @@ const Navbar = () => {
                   {({ isActive }) => (
                     <>
                       <span>{link.name}</span>
+                      {link.isOffer && (
+                        <span className="relative flex items-center ml-1">
+                          <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-[#C8906D] opacity-75"></span>
+                          <span className="relative inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-sans font-bold bg-[#A95732] text-white tracking-wider uppercase shadow-xs">
+                            Hot
+                          </span>
+                        </span>
+                      )}
                       <span
                         className={`absolute bottom-0 left-0 h-[1.5px] bg-[#C8906D] transition-all duration-300 ${
                           isActive ? 'w-full' : 'w-0 group-hover:w-full'
@@ -145,12 +159,17 @@ const Navbar = () => {
                     to={link.path}
                     onClick={() => setMobileMenuOpen(false)}
                     className={({ isActive }) =>
-                      `block text-base tracking-widest uppercase font-sans py-2 border-b border-[#DBC3A5]/10 ${
+                      `flex items-center justify-between text-base tracking-widest uppercase font-sans py-2 border-b border-[#DBC3A5]/10 ${
                         isActive ? 'text-[#DBC3A5] font-medium' : 'text-white/90 hover:text-[#DBC3A5]'
                       }`
                     }
                   >
-                    {link.name}
+                    <span>{link.name}</span>
+                    {link.isOffer && (
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-sans font-bold bg-[#A95732] text-white tracking-wider uppercase">
+                        Hot Offer
+                      </span>
+                    )}
                   </NavLink>
                 ))}
                 

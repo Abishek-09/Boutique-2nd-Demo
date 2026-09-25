@@ -10,6 +10,8 @@ import {
   Check,
   AlertTriangle,
   Package,
+  Tag,
+  Flame,
 } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
 import Button from '../components/UI/Button';
@@ -54,7 +56,12 @@ const ProductsPage = () => {
     image: '/images/hero.jpg',
     fabric: 'Pure Silk & Zari Weave',
     craft: 'Handcrafted Atelier Needlework',
+    isNewArrival: false,
+    isOnOffer: false,
+    discountPrice: '',
+    discountPercentage: '',
   });
+
   const [imagePreview, setImagePreview] = useState('/images/hero.jpg');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -82,6 +89,10 @@ const ProductsPage = () => {
       image: '/images/hero.jpg',
       fabric: 'Pure Silk & Zari Weave',
       craft: 'Handcrafted Atelier Needlework',
+      isNewArrival: true,
+      isOnOffer: false,
+      discountPrice: '',
+      discountPercentage: '',
     });
     setImagePreview('/images/hero.jpg');
     setIsModalOpen(true);
@@ -99,9 +110,62 @@ const ProductsPage = () => {
       image: product.image,
       fabric: product.fabric || 'Pure Silk & Zari Weave',
       craft: product.craft || 'Handcrafted Atelier Needlework',
+      isNewArrival: Boolean(product.isNewArrival),
+      isOnOffer: Boolean(product.isOnOffer),
+      discountPrice: product.discountPrice || '',
+      discountPercentage: product.discountPercentage || '',
     });
     setImagePreview(product.image);
     setIsModalOpen(true);
+  };
+
+  const handlePriceChange = (newPrice) => {
+    const p = Number(newPrice);
+    setFormData((prev) => {
+      let updated = { ...prev, price: newPrice };
+      if (prev.isOnOffer && p > 0) {
+        if (prev.discountPercentage) {
+          const pct = Number(prev.discountPercentage);
+          updated.discountPrice = Math.round(p * (1 - pct / 100));
+        } else if (prev.discountPrice) {
+          const dp = Number(prev.discountPrice);
+          updated.discountPercentage = Math.round(((p - dp) / p) * 100);
+        }
+      }
+      return updated;
+    });
+  };
+
+  const handleDiscountPriceChange = (newDiscountPrice) => {
+    const dp = Number(newDiscountPrice);
+    const p = Number(formData.price);
+    setFormData((prev) => {
+      let pct = '';
+      if (p > 0 && dp > 0 && dp < p) {
+        pct = Math.round(((p - dp) / p) * 100);
+      }
+      return {
+        ...prev,
+        discountPrice: newDiscountPrice,
+        discountPercentage: pct,
+      };
+    });
+  };
+
+  const handleDiscountPercentageChange = (newPercentage) => {
+    const pct = Number(newPercentage);
+    const p = Number(formData.price);
+    setFormData((prev) => {
+      let dp = '';
+      if (p > 0 && pct > 0 && pct < 100) {
+        dp = Math.round(p * (1 - pct / 100));
+      }
+      return {
+        ...prev,
+        discountPercentage: newPercentage,
+        discountPrice: dp,
+      };
+    });
   };
 
   const handleImageFileChange = (e) => {
@@ -208,7 +272,7 @@ const ProductsPage = () => {
 
       {/* Data Table: Image (thumbnail), Name, Category, Price, Stock, Actions (Edit, Delete) */}
       <Table
-        headers={['Image', 'Product Name', 'Category', 'Price', 'Stock Status', 'Actions']}
+        headers={['Image', 'Product Name & Badges', 'Category', 'Price & Offer', 'Stock Status', 'Actions']}
         loading={loading}
         colSpan={6}
         emptyMessage="No products match your search criteria."
@@ -217,20 +281,34 @@ const ProductsPage = () => {
           <tr key={product.id} className="hover:bg-[#F9F6F0]/60 transition-colors">
             {/* Image (thumbnail) */}
             <td className="py-3 px-5">
-              <img
-                src={product.image}
-                alt={product.name}
-                className="w-12 h-14 object-cover rounded-lg shadow-sm border border-gray-200"
-              />
+              <div className="relative w-12 h-14 rounded-lg overflow-hidden shadow-sm border border-gray-200">
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
             </td>
 
-            {/* Name */}
+            {/* Name & Badges */}
             <td className="py-3 px-5">
-              <div className="font-serif text-sm font-medium text-[#174A43]">
-                {product.name}
+              <div className="flex items-center space-x-2">
+                <span className="font-serif text-sm font-medium text-[#174A43]">
+                  {product.name}
+                </span>
+                {product.isNewArrival && (
+                  <span className="px-1.5 py-0.5 rounded text-[9px] font-sans font-bold uppercase tracking-wider bg-[#C8906D] text-white">
+                    NEW
+                  </span>
+                )}
+                {product.isOnOffer && (
+                  <span className="px-1.5 py-0.5 rounded text-[9px] font-sans font-bold uppercase tracking-wider bg-[#A95732] text-white">
+                    SALE {product.discountPercentage ? `-${product.discountPercentage}%` : ''}
+                  </span>
+                )}
               </div>
-              <div className="text-[11px] font-sans text-[#383028]/60 line-clamp-1">
-                {product.fabric || 'Pure Silk'}
+              <div className="text-[11px] font-sans text-[#383028]/60 line-clamp-1 mt-0.5">
+                {product.fabric || 'Pure Silk'} &bull; {product.craft || 'Handcrafted'}
               </div>
             </td>
 
@@ -241,9 +319,22 @@ const ProductsPage = () => {
               </span>
             </td>
 
-            {/* Price */}
-            <td className="py-3 px-5 font-serif font-semibold text-[#174A43]">
-              ₹{Number(product.price).toLocaleString()}
+            {/* Price & Offer */}
+            <td className="py-3 px-5">
+              {product.isOnOffer && product.discountPrice ? (
+                <div className="space-y-0.5">
+                  <div className="font-serif font-bold text-sm text-[#A95732]">
+                    ₹{Number(product.discountPrice).toLocaleString()}
+                  </div>
+                  <div className="text-[11px] font-sans text-[#383028]/50 line-through">
+                    ₹{Number(product.price).toLocaleString()}
+                  </div>
+                </div>
+              ) : (
+                <span className="font-serif font-semibold text-sm text-[#174A43]">
+                  ₹{Number(product.price).toLocaleString()}
+                </span>
+              )}
             </td>
 
             {/* Stock */}
@@ -290,7 +381,7 @@ const ProductsPage = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title={modalMode === 'add' ? 'Add New Atelier Product' : 'Edit Product Silhouette'}
-        subtitle="Provide complete couture attributes, pricing, and high-resolution imagery."
+        subtitle="Manage couture attributes, promotional discounts, and showcase flags."
       >
         <form onSubmit={handleSaveProduct} className="space-y-5">
           <Input
@@ -320,11 +411,11 @@ const ProductsPage = () => {
             </div>
 
             <Input
-              label="Price (INR ₹) *"
+              label="Original Price (INR ₹) *"
               type="number"
               required
               value={formData.price}
-              onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+              onChange={(e) => handlePriceChange(e.target.value)}
               placeholder="34500"
             />
 
@@ -336,6 +427,92 @@ const ProductsPage = () => {
               onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
               placeholder="10"
             />
+          </div>
+
+          {/* New Arrival & On Offer Toggles (PART 3) */}
+          <div className="p-4 rounded-xl bg-[#F9F6F0] border border-[#DBC3A5]/40 space-y-4">
+            <h4 className="font-serif text-sm font-semibold text-[#174A43] flex items-center space-x-2">
+              <Sparkles className="w-4 h-4 text-[#C8906D]" />
+              <span>Showcase Flags &amp; Promotional Settings</span>
+            </h4>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+              {/* Toggle 1: Mark as New Arrival */}
+              <label className="flex items-center justify-between p-3 rounded-xl bg-white border border-gray-200 cursor-pointer shadow-2xs hover:border-[#C8906D] transition-colors">
+                <div>
+                  <span className="text-xs font-sans font-semibold text-[#174A43] block">
+                    Mark as New Arrival
+                  </span>
+                  <span className="text-[11px] text-[#383028]/60 font-sans">
+                    Showcases on &ldquo;/new-arrivals&rdquo; with Terracotta tag
+                  </span>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={formData.isNewArrival}
+                  onChange={(e) => setFormData({ ...formData, isNewArrival: e.target.checked })}
+                  className="w-5 h-5 rounded text-[#C8906D] focus:ring-[#C8906D] cursor-pointer"
+                />
+              </label>
+
+              {/* Toggle 2: Put on Offer */}
+              <label className="flex items-center justify-between p-3 rounded-xl bg-white border border-gray-200 cursor-pointer shadow-2xs hover:border-[#A95732] transition-colors">
+                <div>
+                  <span className="text-xs font-sans font-semibold text-[#174A43] block">
+                    Put on Offer / Sale
+                  </span>
+                  <span className="text-[11px] text-[#383028]/60 font-sans">
+                    Enables discounted price on &ldquo;/offers&rdquo;
+                  </span>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={formData.isOnOffer}
+                  onChange={(e) => setFormData({ ...formData, isOnOffer: e.target.checked })}
+                  className="w-5 h-5 rounded text-[#A95732] focus:ring-[#A95732] cursor-pointer"
+                />
+              </label>
+            </div>
+
+            {/* Revealed Discount Fields when Put on Offer is toggled */}
+            {formData.isOnOffer && (
+              <div className="pt-3 border-t border-[#DBC3A5]/30">
+                <div className="text-[11px] font-sans text-[#383028]/70 mb-3 flex items-center space-x-1.5">
+                  <Tag className="w-3.5 h-3.5 text-[#A95732]" />
+                  <span>Enter either <strong>Discount Price</strong> or <strong>Discount Percentage</strong>; the system automatically computes the other.</span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Input
+                    label="Discounted Price (INR ₹)"
+                    type="number"
+                    value={formData.discountPrice}
+                    onChange={(e) => handleDiscountPriceChange(e.target.value)}
+                    placeholder="e.g. 28000"
+                    helperText={
+                      formData.price && formData.discountPrice
+                        ? `Saves ₹${(Number(formData.price) - Number(formData.discountPrice)).toLocaleString()}`
+                        : ''
+                    }
+                  />
+
+                  <Input
+                    label="Discount Percentage (%)"
+                    type="number"
+                    min="1"
+                    max="99"
+                    value={formData.discountPercentage}
+                    onChange={(e) => handleDiscountPercentageChange(e.target.value)}
+                    placeholder="e.g. 20"
+                    helperText={
+                      formData.discountPercentage
+                        ? `Customer saves ${formData.discountPercentage}% off original price`
+                        : ''
+                    }
+                  />
+                </div>
+              </div>
+            )}
           </div>
 
           <div>

@@ -23,12 +23,27 @@ api.interceptors.request.use(
 
 // Initial mock datasets stored in localStorage for full persistence
 const initLocalStorage = () => {
-  if (!localStorage.getItem('lumiere_admin_products')) {
+  // Always initialize or merge product fields
+  const storedProds = localStorage.getItem('lumiere_admin_products');
+  if (!storedProds) {
     const enriched = initialProducts.map((p) => ({
       ...p,
       stock: Math.floor(Math.random() * 15) + 3,
     }));
     localStorage.setItem('lumiere_admin_products', JSON.stringify(enriched));
+  } else {
+    // Check if the new flags exist on stored items, else merge them
+    const parsed = JSON.parse(storedProds);
+    if (!parsed[0] || parsed[0].isNewArrival === undefined) {
+      const merged = initialProducts.map((initP) => {
+        const found = parsed.find((p) => p.id === initP.id);
+        return {
+          ...initP,
+          stock: found?.stock || Math.floor(Math.random() * 15) + 3,
+        };
+      });
+      localStorage.setItem('lumiere_admin_products', JSON.stringify(merged));
+    }
   }
 
   if (!localStorage.getItem('lumiere_admin_orders')) {
@@ -39,10 +54,10 @@ const initLocalStorage = () => {
         email: 'ananya.singh@royalheritage.in',
         phone: '+91 98201 44821',
         date: '2026-09-24',
-        amount: 34500,
+        amount: 30400,
         status: 'Delivered',
         items: [
-          { name: 'The Emerald Noor Lehenga', qty: 1, price: 34500, image: '/images/hero.jpg' },
+          { name: 'The Emerald Noor Lehenga', qty: 1, price: 30400, image: '/images/hero.jpg' },
         ],
         shippingAddress: '12 Palace View Residences, Jaipur, Rajasthan 302001',
       },
@@ -52,10 +67,10 @@ const initLocalStorage = () => {
         email: 'v.roy@mercantile.com',
         phone: '+91 98112 55902',
         date: '2026-09-23',
-        amount: 24000,
+        amount: 20400,
         status: 'Shipped',
         items: [
-          { name: 'Royal Emerald Brocade Bandhgala', qty: 1, price: 24000, image: '/images/men.jpg' },
+          { name: 'Royal Emerald Brocade Bandhgala', qty: 1, price: 20400, image: '/images/men.jpg' },
         ],
         shippingAddress: 'Flat 4B, Malabar Hill Heights, Mumbai 400006',
       },
@@ -65,10 +80,10 @@ const initLocalStorage = () => {
         email: 'meera.chawla@coutureclub.org',
         phone: '+91 99304 88124',
         date: '2026-09-22',
-        amount: 68000,
+        amount: 57800,
         status: 'Pending',
         items: [
-          { name: 'Heirloom Colombian Emerald & Polki Choker', qty: 1, price: 68000, image: '/images/jewellery.jpg' },
+          { name: 'Heirloom Colombian Emerald & Polki Choker', qty: 1, price: 57800, image: '/images/jewellery.jpg' },
         ],
         shippingAddress: 'Villa 18, Golf Links, New Delhi 110003',
       },
@@ -78,11 +93,11 @@ const initLocalStorage = () => {
         email: 'devika@singhaniacorp.in',
         phone: '+91 98450 11984',
         date: '2026-09-21',
-        amount: 27400,
+        amount: 25700,
         status: 'Shipped',
         items: [
           { name: 'Terracotta Banarasi Katan Silk Saree', qty: 1, price: 18900, image: '/images/women.jpg' },
-          { name: 'Artisanal Zardozi Velvet Minaudière Clutch', qty: 1, price: 8500, image: '/images/accessories.jpg' },
+          { name: 'Artisanal Zardozi Velvet Minaudière Clutch', qty: 1, price: 6800, image: '/images/accessories.jpg' },
         ],
         shippingAddress: '7 Lavelle Road, Richmond Town, Bengaluru 560001',
       },
@@ -92,10 +107,10 @@ const initLocalStorage = () => {
         email: 'karan.mehra@atelierventures.com',
         phone: '+91 97171 99201',
         date: '2026-09-20',
-        amount: 14500,
+        amount: 11600,
         status: 'Delivered',
         items: [
-          { name: 'Emerald Heritage Silk Kurta & Stole', qty: 1, price: 14500, image: '/images/men.jpg' },
+          { name: 'Emerald Heritage Silk Kurta & Stole', qty: 1, price: 11600, image: '/images/men.jpg' },
         ],
         shippingAddress: '15 Koregaon Park, Lane 3, Pune 411001',
       },
@@ -127,6 +142,19 @@ const initLocalStorage = () => {
     };
     localStorage.setItem('lumiere_admin_cms', JSON.stringify(defaultCMS));
   }
+
+  // Global Offer Banner Config
+  if (!localStorage.getItem('lumiere_admin_banner')) {
+    const defaultBanner = {
+      enabled: true,
+      text: 'Festive Season Grandeur: Complimentary Silk Stole on Orders Above ₹20,000 | Code: LUMIERE20',
+      link: '/offers',
+      bgColor: '#C8906D', // Terracotta default
+      badgeText: 'FESTIVE SALE',
+      endDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 days countdown
+    };
+    localStorage.setItem('lumiere_admin_banner', JSON.stringify(defaultBanner));
+  }
 };
 
 initLocalStorage();
@@ -136,7 +164,6 @@ export const adminService = {
   // Auth API
   async login(email, password) {
     if (email && password) {
-      // Simulate real JWT token payload
       const mockToken = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.${btoa(
         JSON.stringify({ email, role: 'admin', exp: Date.now() + 86400000 })
       )}.sIgNaTuRe`;
@@ -170,15 +197,48 @@ export const adminService = {
     return stored ? JSON.parse(stored) : [];
   },
 
+  // GET /api/products/new-arrivals (Fetches products where isNewArrival: true)
+  async getNewArrivals() {
+    const products = await this.getProducts();
+    return products.filter((p) => p.isNewArrival === true);
+  },
+
+  // GET /api/products/offers (Fetches products where isOnOffer: true)
+  async getOffers() {
+    const products = await this.getProducts();
+    return products.filter((p) => p.isOnOffer === true);
+  },
+
   async createProduct(productData) {
     const products = await this.getProducts();
+    const price = Number(productData.price);
+    const isOnOffer = Boolean(productData.isOnOffer);
+    let discountPrice = productData.discountPrice ? Number(productData.discountPrice) : null;
+    let discountPercentage = productData.discountPercentage ? Number(productData.discountPercentage) : null;
+
+    if (isOnOffer) {
+      if (discountPrice && !discountPercentage && price > 0) {
+        discountPercentage = Math.round(((price - discountPrice) / price) * 100);
+      } else if (discountPercentage && !discountPrice && price > 0) {
+        discountPrice = Math.round(price * (1 - discountPercentage / 100));
+      }
+    } else {
+      discountPrice = null;
+      discountPercentage = null;
+    }
+
     const newProduct = {
       ...productData,
       id: Date.now(),
-      price: Number(productData.price),
+      price,
+      originalPrice: productData.originalPrice ? Number(productData.originalPrice) : price,
+      isNewArrival: Boolean(productData.isNewArrival),
+      isOnOffer,
+      discountPrice,
+      discountPercentage,
       stock: Number(productData.stock || 5),
       image: productData.image || '/images/hero.jpg',
-      tag: productData.tag || 'New',
+      tag: productData.isNewArrival ? 'New Arrival' : productData.tag || 'Atelier',
     };
     const updated = [newProduct, ...products];
     localStorage.setItem('lumiere_admin_products', JSON.stringify(updated));
@@ -187,8 +247,35 @@ export const adminService = {
 
   async updateProduct(id, productData) {
     const products = await this.getProducts();
+    const price = Number(productData.price);
+    const isOnOffer = Boolean(productData.isOnOffer);
+    let discountPrice = productData.discountPrice ? Number(productData.discountPrice) : null;
+    let discountPercentage = productData.discountPercentage ? Number(productData.discountPercentage) : null;
+
+    if (isOnOffer) {
+      if (discountPrice && !discountPercentage && price > 0) {
+        discountPercentage = Math.round(((price - discountPrice) / price) * 100);
+      } else if (discountPercentage && !discountPrice && price > 0) {
+        discountPrice = Math.round(price * (1 - discountPercentage / 100));
+      }
+    } else {
+      discountPrice = null;
+      discountPercentage = null;
+    }
+
     const updated = products.map((p) =>
-      p.id === id ? { ...p, ...productData, price: Number(productData.price), stock: Number(productData.stock) } : p
+      p.id === id
+        ? {
+            ...p,
+            ...productData,
+            price,
+            isNewArrival: Boolean(productData.isNewArrival),
+            isOnOffer,
+            discountPrice,
+            discountPercentage,
+            stock: Number(productData.stock),
+          }
+        : p
     );
     localStorage.setItem('lumiere_admin_products', JSON.stringify(updated));
     return updated.find((p) => p.id === id);
@@ -244,6 +331,26 @@ export const adminService = {
   async updateContent(cmsData) {
     localStorage.setItem('lumiere_admin_cms', JSON.stringify(cmsData));
     return cmsData;
+  },
+
+  // Global Offer Banner API: GET & PUT /api/admin/offers
+  async getOfferBanner() {
+    const stored = localStorage.getItem('lumiere_admin_banner');
+    return stored
+      ? JSON.parse(stored)
+      : {
+          enabled: true,
+          text: 'Festive Season Grandeur: Complimentary Silk Stole on Orders Above ₹20,000 | Code: LUMIERE20',
+          link: '/offers',
+          bgColor: '#C8906D',
+          badgeText: 'FESTIVE SALE',
+          endDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+        };
+  },
+
+  async updateOfferBanner(bannerData) {
+    localStorage.setItem('lumiere_admin_banner', JSON.stringify(bannerData));
+    return bannerData;
   },
 };
 

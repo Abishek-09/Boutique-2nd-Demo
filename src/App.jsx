@@ -13,6 +13,8 @@ import ScrollToTop from './components/ScrollToTop';
 
 import HomePage from './pages/HomePage';
 import ShopPage from './pages/ShopPage';
+import NewArrivalsPage from './pages/NewArrivalsPage';
+import OffersPage from './pages/OffersPage';
 import CollectionsPage from './pages/CollectionsPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
@@ -24,6 +26,7 @@ import AdminLayout from './admin/components/AdminLayout';
 import ProtectedRoute from './admin/components/ProtectedRoute';
 import DashboardPage from './admin/pages/DashboardPage';
 import ProductsPage from './admin/pages/ProductsPage';
+import OffersAdminPage from './admin/pages/OffersAdminPage';
 import OrdersPage from './admin/pages/OrdersPage';
 import ContentPage from './admin/pages/ContentPage';
 import SubscribersPage from './admin/pages/SubscribersPage';
@@ -83,6 +86,7 @@ function App() {
               <Route path="/admin" element={<AdminLayout />}>
                 <Route index element={<DashboardPage />} />
                 <Route path="products" element={<ProductsPage />} />
+                <Route path="offers" element={<OffersAdminPage />} />
                 <Route path="orders" element={<OrdersPage />} />
                 <Route path="content" element={<ContentPage />} />
                 <Route path="subscribers" element={<SubscribersPage />} />
@@ -93,6 +97,8 @@ function App() {
             <Route element={<StorefrontLayout />}>
               <Route path="/" element={<HomePage />} />
               <Route path="/shop" element={<ShopPage />} />
+              <Route path="/new-arrivals" element={<NewArrivalsPage />} />
+              <Route path="/offers" element={<OffersPage />} />
               <Route path="/collections" element={<CollectionsPage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/contact" element={<ContactPage />} />

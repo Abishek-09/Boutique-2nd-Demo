@@ -9,6 +9,14 @@ export const AdminProvider = ({ children }) => {
   const [orders, setOrders] = useState([]);
   const [subscribers, setSubscribers] = useState([]);
   const [cms, setCms] = useState({});
+  const [offerBanner, setOfferBanner] = useState({
+    enabled: true,
+    text: 'Festive Season Grandeur: Complimentary Silk Stole on Orders Above ₹20,000 | Code: LUMIERE20',
+    link: '/offers',
+    bgColor: '#C8906D',
+    badgeText: 'FESTIVE SALE',
+    endDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+  });
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState(null);
 
@@ -20,16 +28,18 @@ export const AdminProvider = ({ children }) => {
   const fetchAllData = async () => {
     try {
       setLoading(true);
-      const [prods, ords, subs, cmsData] = await Promise.all([
+      const [prods, ords, subs, cmsData, bannerData] = await Promise.all([
         adminService.getProducts(),
         adminService.getOrders(),
         adminService.getSubscribers(),
         adminService.getContent(),
+        adminService.getOfferBanner(),
       ]);
       setProducts(prods);
       setOrders(ords);
       setSubscribers(subs);
       setCms(cmsData);
+      setOfferBanner(bannerData);
     } catch (err) {
       showToast('Error loading atelier data.', 'error');
     } finally {
@@ -38,9 +48,7 @@ export const AdminProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (adminService.isAuthenticated()) {
-      fetchAllData();
-    }
+    fetchAllData();
   }, []);
 
   const login = async (email, password) => {
@@ -62,6 +70,7 @@ export const AdminProvider = ({ children }) => {
     try {
       const created = await adminService.createProduct(productData);
       setProducts((prev) => [created, ...prev]);
+      window.dispatchEvent(new CustomEvent('lumiere-data-updated'));
       showToast(`Product "${created.name}" created successfully.`);
       return created;
     } catch (err) {
@@ -74,6 +83,7 @@ export const AdminProvider = ({ children }) => {
     try {
       const updated = await adminService.updateProduct(id, productData);
       setProducts((prev) => prev.map((p) => (p.id === id ? updated : p)));
+      window.dispatchEvent(new CustomEvent('lumiere-data-updated'));
       showToast(`Product "${updated.name}" updated successfully.`);
       return updated;
     } catch (err) {
@@ -86,6 +96,7 @@ export const AdminProvider = ({ children }) => {
     try {
       await adminService.deleteProduct(id);
       setProducts((prev) => prev.filter((p) => p.id !== id));
+      window.dispatchEvent(new CustomEvent('lumiere-data-updated'));
       showToast('Product removed from catalog.');
     } catch (err) {
       showToast('Failed to delete product.', 'error');
@@ -111,10 +122,25 @@ export const AdminProvider = ({ children }) => {
     try {
       const updated = await adminService.updateContent(newCms);
       setCms(updated);
+      window.dispatchEvent(new CustomEvent('lumiere-data-updated'));
       showToast('Frontend CMS content updated successfully.');
       return updated;
     } catch (err) {
       showToast('Failed to save CMS changes.', 'error');
+      throw err;
+    }
+  };
+
+  // Global Offer Banner actions
+  const saveOfferBanner = async (newBanner) => {
+    try {
+      const updated = await adminService.updateOfferBanner(newBanner);
+      setOfferBanner(updated);
+      window.dispatchEvent(new CustomEvent('lumiere-data-updated'));
+      showToast('Global Promotion Banner updated successfully.');
+      return updated;
+    } catch (err) {
+      showToast('Failed to save promotion banner.', 'error');
       throw err;
     }
   };
@@ -136,6 +162,7 @@ export const AdminProvider = ({ children }) => {
         orders,
         subscribers,
         cms,
+        offerBanner,
         loading,
         toast,
         showToast,
@@ -144,6 +171,7 @@ export const AdminProvider = ({ children }) => {
         removeProduct,
         changeOrderStatus,
         saveCMS,
+        saveOfferBanner,
         exportSubscribers,
         refreshData: fetchAllData,
       }}
