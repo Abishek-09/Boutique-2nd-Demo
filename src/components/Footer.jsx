@@ -24,11 +24,11 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-[#174A43] text-white pt-16 sm:pt-20 pb-12 border-t border-[#DBC3A5]/20 relative">
+    <footer className="bg-[#174A43] text-white py-16 md:py-24 border-t border-[#DBC3A5]/20 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-12 pb-16 border-b border-[#DBC3A5]/15">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12 pb-12 md:pb-16 border-b border-[#DBC3A5]/15">
           
           {/* Left Column: Brand & Tagline */}
           <div className="lg:col-span-5 space-y-4">
@@ -163,8 +163,8 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar: Copyright & Back to Top */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-[#DBC3A5]/70 font-sans gap-4">
-          <p>© 2024 Lumiere. All rights reserved.</p>
+        <div className="pt-8 flex flex-col md:flex-row items-center justify-between text-xs text-[#DBC3A5]/70 font-sans gap-4 text-center">
+          <p>© 2026 Lumière Atelier. All rights reserved.</p>
 
           <div className="flex items-center space-x-6">
             <Link to="/about" className="hover:text-white transition-colors">Privacy Policy</Link>

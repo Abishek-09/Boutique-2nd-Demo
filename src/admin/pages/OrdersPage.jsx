@@ -105,15 +105,17 @@ const OrdersPage = () => {
             </td>
 
             {/* Actions: View Details */}
-            <td className="py-4 px-5">
-              <Button
-                variant="outline"
-                size="sm"
-                icon={Eye}
-                onClick={() => setSelectedOrder(order)}
-              >
-                View Details
-              </Button>
+            <td className="py-4 px-5 text-right">
+              <div className="flex justify-end">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  icon={Eye}
+                  onClick={() => setSelectedOrder(order)}
+                >
+                  View Details
+                </Button>
+              </div>
             </td>
           </tr>
         ))}

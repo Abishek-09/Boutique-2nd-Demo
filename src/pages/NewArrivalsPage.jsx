@@ -131,10 +131,10 @@ const NewArrivalsPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: index * 0.05 }}
-                className="group bg-white rounded-2xl overflow-hidden border border-[#DBC3A5]/40 shadow-sm hover:shadow-luxury transition-all duration-300 flex flex-col"
+                className="group bg-white rounded-2xl overflow-hidden border border-[#DBC3A5]/40 shadow-sm hover:shadow-luxury transition-all duration-300 flex flex-col h-full"
               >
                 {/* Image Container with Actions */}
-                <div className="relative aspect-[3/4] overflow-hidden bg-gray-100">
+                <div className="relative aspect-[3/4] overflow-hidden bg-gray-100 flex-shrink-0">
                   <img
                     src={product.image}
                     alt={product.name}
@@ -161,7 +161,7 @@ const NewArrivalsPage = () => {
                     <button
                       type="button"
                       onClick={() => setQuickViewProduct(product)}
-                      className="px-4 py-2 rounded-xl bg-white/95 text-[#174A43] hover:bg-[#174A43] hover:text-white text-xs font-sans font-semibold uppercase tracking-wider flex items-center space-x-1.5 shadow-lg transition-all"
+                      className="px-4 py-2 rounded-xl bg-white/95 text-[#174A43] hover:bg-[#174A43] hover:text-white text-xs font-sans font-semibold uppercase tracking-wider flex items-center space-x-1.5 shadow-lg transition-all duration-300 hover:scale-[1.02]"
                     >
                       <Eye className="w-3.5 h-3.5" />
                       <span>Quick View</span>
@@ -183,38 +183,38 @@ const NewArrivalsPage = () => {
                     </p>
                   </div>
 
-                  <div className="pt-3 border-t border-[#DBC3A5]/25 flex items-center justify-between">
-                    <div>
+                  <div className="pt-3 border-t border-[#DBC3A5]/25 flex items-center justify-between gap-2 mt-auto">
+                    <div className="flex flex-col min-w-0">
                       {product.isOnOffer && product.discountPrice ? (
-                        <div className="flex items-baseline space-x-2">
-                          <span className="font-serif text-lg font-bold text-[#A95732]">
+                        <>
+                          <span className="font-serif text-lg font-bold text-[#A95732] leading-none">
                             ₹{product.discountPrice.toLocaleString()}
                           </span>
-                          <span className="text-xs text-[#383028]/50 line-through font-sans">
+                          <span className="text-xs text-[#383028]/50 line-through font-sans mt-1">
                             ₹{product.price.toLocaleString()}
                           </span>
-                        </div>
+                        </>
                       ) : (
-                        <div>
-                          <span className="font-serif text-lg font-semibold text-[#174A43]">
+                        <>
+                          <span className="font-serif text-lg font-semibold text-[#174A43] leading-none">
                             ₹{product.price.toLocaleString()}
                           </span>
                           {product.originalPrice && product.originalPrice > product.price && (
-                            <span className="text-xs text-[#383028]/50 line-through ml-2 font-sans">
+                            <span className="text-xs text-[#383028]/50 line-through font-sans mt-1">
                               ₹{product.originalPrice.toLocaleString()}
                             </span>
                           )}
-                        </div>
+                        </>
                       )}
                     </div>
 
                     <button
                       type="button"
                       onClick={() => addToCart(product)}
-                      className="px-4 py-2 rounded-xl bg-[#A95732] hover:bg-[#8f4320] text-white text-xs font-sans font-semibold uppercase tracking-wider flex items-center space-x-1.5 transition-colors shadow-sm ring-1 ring-[#DBC3A5]/40"
+                      className="px-3.5 sm:px-4 py-2 rounded-xl bg-[#A95732] hover:bg-[#8f4320] text-white text-xs font-sans font-semibold uppercase tracking-wider flex items-center space-x-1.5 transition-all duration-300 shadow-sm ring-1 ring-[#DBC3A5]/40 hover:scale-[1.02] flex-shrink-0 whitespace-nowrap"
                     >
-                      <ShoppingBag className="w-3.5 h-3.5" />
-                      <span>Add to Bag</span>
+                      <ShoppingBag className="w-3.5 h-3.5 flex-shrink-0" />
+                      <span className="whitespace-nowrap">Add to Bag</span>
                     </button>
                   </div>
                 </div>
@@ -275,11 +275,11 @@ const NewArrivalsPage = () => {
                       </h3>
 
                       {quickViewProduct.isOnOffer && quickViewProduct.discountPrice ? (
-                        <div className="flex items-baseline space-x-2 mt-2">
-                          <p className="font-serif text-2xl font-bold text-[#A95732]">
+                        <div className="flex flex-col mt-2">
+                          <p className="font-serif text-2xl font-bold text-[#A95732] leading-none">
                             ₹{quickViewProduct.discountPrice.toLocaleString()}
                           </p>
-                          <p className="text-sm text-[#383028]/50 line-through font-sans">
+                          <p className="text-sm text-[#383028]/50 line-through font-sans mt-1">
                             ₹{quickViewProduct.price.toLocaleString()}
                           </p>
                         </div>

@@ -25,7 +25,7 @@ const GlobalOfferBanner = () => {
         style={{ backgroundColor: bgColor }}
         className="text-white relative z-50 overflow-hidden shadow-sm"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center justify-between text-xs font-sans tracking-wider">
+        <div className="w-full px-4 sm:px-8 lg:px-12 xl:px-14 py-2.5 flex items-center justify-between text-xs font-sans tracking-wider">
           {/* Subtle Left Accent Sparkle */}
           <div className="hidden sm:flex items-center space-x-1.5 opacity-80">
             <Sparkles className="w-3.5 h-3.5 text-[#F9F6F0]" />

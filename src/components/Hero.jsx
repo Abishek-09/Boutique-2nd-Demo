@@ -113,7 +113,7 @@ const Hero = () => {
                     <button
                       type="button"
                       onClick={() => navigate('/shop')}
-                      className="group relative inline-flex items-center space-x-3 px-8 py-4 rounded-xl bg-[#A95732] hover:bg-[#914624] text-white font-sans text-sm tracking-wider uppercase font-medium shadow-copper transition-all duration-300 transform hover:-translate-y-0.5 ring-1 ring-[#DBC3A5]/60 hover:ring-[#F9F6F0] focus:outline-none"
+                      className="group relative inline-flex items-center space-x-3 px-8 py-4 rounded-xl bg-[#A95732] hover:bg-[#914624] text-white font-sans text-sm tracking-wider uppercase font-medium shadow-copper transition-all duration-300 transform hover:-translate-y-0.5 hover:scale-[1.02] ring-1 ring-[#DBC3A5]/60 hover:ring-[#F9F6F0] focus:outline-none"
                     >
                       <span>Shop Now</span>
                       <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1.5" />
@@ -122,7 +122,7 @@ const Hero = () => {
                     <button
                       type="button"
                       onClick={() => navigate('/collections')}
-                      className="inline-flex items-center space-x-2 text-sm uppercase tracking-wider font-medium text-[#174A43] hover:text-[#123632] px-4 py-3 rounded-lg hover:bg-white/20 transition-colors"
+                      className="inline-flex items-center space-x-2 text-sm uppercase tracking-wider font-medium text-[#174A43] hover:text-[#123632] px-4 py-3 rounded-lg hover:bg-white/20 transition-all duration-300 hover:scale-[1.02]"
                     >
                       <span>Explore Lookbook</span>
                     </button>

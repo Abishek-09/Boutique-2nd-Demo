@@ -7,7 +7,7 @@ const CollectionsPage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-[#F9F6F0] min-h-screen py-16 sm:py-24">
+    <div className="bg-[#F9F6F0] min-h-screen py-16 md:py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Page Banner */}
@@ -19,7 +19,7 @@ const CollectionsPage = () => {
           <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl text-[#174A43] font-normal tracking-tight mb-4">
             The Lumière Collections
           </h1>
-          <p className="font-sans text-base text-[#383028]/80 font-light leading-relaxed">
+          <p className="font-sans text-base text-[#383028]/80 font-light leading-relaxed mb-6">
             Each collection represents a distinct chapter of our atelier’s creative odyssey—merging ancestral artisanal techniques with contemporary silhouettes.
           </p>
         </div>
@@ -64,11 +64,11 @@ const CollectionsPage = () => {
                     <span>COLLECTION 0{index + 1}</span>
                   </div>
 
-                  <h2 className="font-serif text-3xl sm:text-4xl text-[#174A43] font-normal leading-tight">
+                  <h2 className="font-serif text-3xl sm:text-4xl text-[#174A43] font-normal leading-tight mb-4">
                     {col.fullName}
                   </h2>
 
-                  <p className="font-sans text-base text-[#383028]/85 font-light leading-relaxed">
+                  <p className="font-sans text-base text-[#383028]/85 font-light leading-relaxed mb-6">
                     {col.description} Sourced directly from our family-run weaving cooperatives in Varanasi, Rajasthan, and Kashmir, each garment honors slow fashion principles and zero-waste craftsmanship.
                   </p>
 
@@ -91,7 +91,7 @@ const CollectionsPage = () => {
                     <button
                       type="button"
                       onClick={() => navigate(`/shop?category=${col.routeParam}`)}
-                      className="group inline-flex items-center space-x-3 px-8 py-3.5 rounded-xl bg-[#A95732] hover:bg-[#8f4320] text-white font-sans text-xs uppercase tracking-widest font-semibold shadow-copper transition-all ring-1 ring-[#DBC3A5]/40"
+                      className="group inline-flex items-center space-x-3 px-8 py-3.5 rounded-xl bg-[#A95732] hover:bg-[#8f4320] text-white font-sans text-xs uppercase tracking-widest font-semibold shadow-copper transition-all duration-300 hover:scale-[1.02] ring-1 ring-[#DBC3A5]/40"
                     >
                       <span>Shop {col.name} Edit</span>
                       <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1.5" />

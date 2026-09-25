@@ -13,7 +13,14 @@ const Table = ({
         <thead>
           <tr className="bg-[#F9F6F0] border-b border-gray-100 text-[#174A43] text-xs uppercase tracking-wider font-semibold">
             {headers.map((head, index) => (
-              <th key={index} className="py-3.5 px-5">
+              <th
+                key={index}
+                className={`py-3.5 px-5 ${
+                  index === headers.length - 1 && head.toLowerCase().includes('action')
+                    ? 'text-right'
+                    : ''
+                }`}
+              >
                 {head}
               </th>
             ))}

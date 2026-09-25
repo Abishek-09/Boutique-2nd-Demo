@@ -126,13 +126,13 @@ const DashboardPage = () => {
       </div>
 
       {/* Top Row: 4 Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((item) => {
           const Icon = item.icon;
           return (
             <div
               key={item.title}
-              className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300"
+              className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300"
             >
               <div className="flex items-center justify-between mb-4">
                 <span className="text-xs uppercase tracking-wider text-[#383028]/70 font-sans font-medium">
@@ -301,36 +301,36 @@ const DashboardPage = () => {
           <table className="w-full text-left font-sans text-xs">
             <thead>
               <tr className="border-b border-gray-100 text-[#174A43]/70 font-semibold uppercase tracking-wider">
-                <th className="py-3 px-3">Order ID</th>
-                <th className="py-3 px-3">Customer</th>
-                <th className="py-3 px-3">Date</th>
-                <th className="py-3 px-3">Items</th>
-                <th className="py-3 px-3">Total Amount</th>
-                <th className="py-3 px-3">Status</th>
+                <th className="py-3 px-4">Order ID</th>
+                <th className="py-3 px-4">Customer</th>
+                <th className="py-3 px-4">Date</th>
+                <th className="py-3 px-4">Items</th>
+                <th className="py-3 px-4">Total Amount</th>
+                <th className="py-3 px-4">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50 text-[#383028]">
               {recentOrders.map((order) => (
                 <tr key={order.id} className="hover:bg-[#F9F6F0]/60 transition-colors">
-                  <td className="py-3.5 px-3 font-mono font-medium text-[#174A43]">
+                  <td className="py-3.5 px-4 font-mono font-medium text-[#174A43]">
                     {order.id}
                   </td>
-                  <td className="py-3.5 px-3">
+                  <td className="py-3.5 px-4">
                     <div className="font-medium text-[#174A43]">{order.customer}</div>
                     <div className="text-[10px] text-[#383028]/60">{order.email}</div>
                   </td>
-                  <td className="py-3.5 px-3 text-[#383028]/70">
+                  <td className="py-3.5 px-4 text-[#383028]/70">
                     {order.date}
                   </td>
-                  <td className="py-3.5 px-3">
+                  <td className="py-3.5 px-4">
                     <span className="line-clamp-1 max-w-xs text-[#383028]/85">
                       {order.items.map((i) => i.name).join(', ')}
                     </span>
                   </td>
-                  <td className="py-3.5 px-3 font-serif font-semibold text-[#174A43]">
+                  <td className="py-3.5 px-4 font-serif font-semibold text-[#174A43]">
                     ₹{order.amount.toLocaleString()}
                   </td>
-                  <td className="py-3.5 px-3">
+                  <td className="py-3.5 px-4">
                     <span
                       className={`inline-block px-2.5 py-1 rounded-full text-[10px] uppercase font-semibold border ${getStatusBadge(
                         order.status

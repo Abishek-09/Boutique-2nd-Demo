@@ -121,7 +121,7 @@ const CollectionModal = ({ selectedCategory, onClose, onAddToCart }) => {
                         </p>
                       </div>
 
-                      <div className="pt-2 flex items-center justify-between border-t border-[#DBC3A5]/20">
+                      <div className="pt-2 flex items-center justify-between gap-2 border-t border-[#DBC3A5]/20">
                         <span className="font-serif text-base font-semibold text-[#174A43]">
                           ₹{prod.price.toLocaleString()}
                         </span>
@@ -137,10 +137,10 @@ const CollectionModal = ({ selectedCategory, onClose, onAddToCart }) => {
                               image: prod.image,
                             });
                           }}
-                          className="px-3.5 py-1.5 rounded-lg bg-[#A95732] hover:bg-[#8f4320] text-white text-xs font-sans font-medium uppercase tracking-wider flex items-center space-x-1.5 transition-colors shadow-sm"
+                          className="px-3.5 py-1.5 rounded-lg bg-[#A95732] hover:bg-[#8f4320] text-white text-xs font-sans font-medium uppercase tracking-wider flex items-center space-x-1.5 transition-colors shadow-sm flex-shrink-0 whitespace-nowrap"
                         >
-                          <ShoppingBag className="w-3.5 h-3.5" />
-                          <span>Add to Bag</span>
+                          <ShoppingBag className="w-3.5 h-3.5 flex-shrink-0" />
+                          <span className="whitespace-nowrap">Add to Bag</span>
                         </button>
                       </div>
                     </div>

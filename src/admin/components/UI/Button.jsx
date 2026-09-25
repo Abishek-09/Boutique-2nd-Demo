@@ -14,7 +14,7 @@ const Button = ({
   ...props
 }) => {
   const baseStyles =
-    'inline-flex items-center justify-center font-sans font-medium rounded-xl transition-all duration-200 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed';
+    'inline-flex items-center justify-center font-sans font-medium rounded-xl transition-all duration-300 hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-[#174A43] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100';
 
   const sizeStyles = {
     sm: 'px-3 py-1.5 text-xs space-x-1.5',

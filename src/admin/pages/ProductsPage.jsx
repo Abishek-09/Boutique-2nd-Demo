@@ -94,6 +94,13 @@ const ProductsPage = () => {
       discountPrice: '',
       discountPercentage: '',
     });
+    setFormTouched({
+      name: false,
+      price: false,
+      stock: false,
+      discountPrice: false,
+      discountPercentage: false,
+    });
     setImagePreview('/images/hero.jpg');
     setIsModalOpen(true);
   };
@@ -115,9 +122,40 @@ const ProductsPage = () => {
       discountPrice: product.discountPrice || '',
       discountPercentage: product.discountPercentage || '',
     });
+    setFormTouched({
+      name: false,
+      price: false,
+      stock: false,
+      discountPrice: false,
+      discountPercentage: false,
+    });
     setImagePreview(product.image);
     setIsModalOpen(true);
   };
+
+  // Real-time Validation Checks
+  const [formTouched, setFormTouched] = useState({
+    name: false,
+    price: false,
+    stock: false,
+    discountPrice: false,
+    discountPercentage: false,
+  });
+
+  const isNameValid = Boolean(formData.name && formData.name.trim().length >= 2);
+  const isPriceValid = Boolean(formData.price && Number(formData.price) > 0);
+  const isStockValid = Boolean(formData.stock !== '' && Number(formData.stock) >= 0);
+
+  const isDiscountValid =
+    !formData.isOnOffer ||
+    ((!formData.discountPrice ||
+      (Number(formData.discountPrice) > 0 &&
+        Number(formData.discountPrice) < Number(formData.price))) &&
+      (!formData.discountPercentage ||
+        (Number(formData.discountPercentage) > 0 &&
+          Number(formData.discountPercentage) < 100)));
+
+  const isProductFormValid = isNameValid && isPriceValid && isStockValid && isDiscountValid;
 
   const handlePriceChange = (newPrice) => {
     const p = Number(newPrice);
@@ -351,9 +389,9 @@ const ProductsPage = () => {
               </div>
             </td>
 
-            {/* Actions: Edit, Delete */}
-            <td className="py-3 px-5">
-              <div className="flex items-center space-x-2">
+            {/* Actions: Edit, Delete (Aligned right consistently) */}
+            <td className="py-3.5 px-5 text-right">
+              <div className="flex items-center justify-end space-x-2">
                 <button
                   type="button"
                   onClick={() => handleOpenEditModal(product)}
@@ -383,24 +421,29 @@ const ProductsPage = () => {
         title={modalMode === 'add' ? 'Add New Atelier Product' : 'Edit Product Silhouette'}
         subtitle="Manage couture attributes, promotional discounts, and showcase flags."
       >
-        <form onSubmit={handleSaveProduct} className="space-y-5">
+        <form onSubmit={handleSaveProduct} noValidate className="space-y-5">
           <Input
-            label="Product Name *"
+            label="Product Name"
             required
             value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            onBlur={() => setFormTouched((p) => ({ ...p, name: true }))}
+            onChange={(e) => {
+              setFormData({ ...formData, name: e.target.value });
+              if (!formTouched.name) setFormTouched((p) => ({ ...p, name: true }));
+            }}
+            error={formTouched.name && !isNameValid ? 'Product name is required (min 2 characters)' : ''}
             placeholder="e.g. Royal Emerald Brocade Sherwani"
           />
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="block text-xs uppercase tracking-wider font-sans font-semibold text-[#174A43] mb-1.5">
-                Category *
+                Category <span className="text-[#C8906D]">*</span>
               </label>
               <select
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#DBC3A5]/60 text-sm font-sans text-[#383028] focus:outline-none focus:border-[#C8906D]"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#DBC3A5]/60 text-sm font-sans text-[#383028] focus:outline-none focus:border-[#174A43] focus:ring-2 focus:ring-[#174A43]/20 transition-all duration-300"
               >
                 {categories.map((c) => (
                   <option key={c.id} value={c.id}>
@@ -411,20 +454,32 @@ const ProductsPage = () => {
             </div>
 
             <Input
-              label="Original Price (INR ₹) *"
+              label="Original Price (INR ₹)"
               type="number"
+              min="1"
               required
               value={formData.price}
-              onChange={(e) => handlePriceChange(e.target.value)}
+              onBlur={() => setFormTouched((p) => ({ ...p, price: true }))}
+              onChange={(e) => {
+                handlePriceChange(e.target.value);
+                if (!formTouched.price) setFormTouched((p) => ({ ...p, price: true }));
+              }}
+              error={formTouched.price && !isPriceValid ? 'Price must be greater than 0' : ''}
               placeholder="34500"
             />
 
             <Input
-              label="Stock Quantity *"
+              label="Stock Quantity"
               type="number"
+              min="0"
               required
               value={formData.stock}
-              onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
+              onBlur={() => setFormTouched((p) => ({ ...p, stock: true }))}
+              onChange={(e) => {
+                setFormData({ ...formData, stock: e.target.value });
+                if (!formTouched.stock) setFormTouched((p) => ({ ...p, stock: true }));
+              }}
+              error={formTouched.stock && !isStockValid ? 'Stock must be 0 or more' : ''}
               placeholder="10"
             />
           </div>
@@ -486,11 +541,23 @@ const ProductsPage = () => {
                   <Input
                     label="Discounted Price (INR ₹)"
                     type="number"
+                    min="1"
                     value={formData.discountPrice}
-                    onChange={(e) => handleDiscountPriceChange(e.target.value)}
+                    onBlur={() => setFormTouched((p) => ({ ...p, discountPrice: true }))}
+                    onChange={(e) => {
+                      handleDiscountPriceChange(e.target.value);
+                      if (!formTouched.discountPrice) setFormTouched((p) => ({ ...p, discountPrice: true }));
+                    }}
+                    error={
+                      formTouched.discountPrice &&
+                      formData.discountPrice &&
+                      (Number(formData.discountPrice) <= 0 || Number(formData.discountPrice) >= Number(formData.price))
+                        ? 'Discount price must be positive and lower than original price'
+                        : ''
+                    }
                     placeholder="e.g. 28000"
                     helperText={
-                      formData.price && formData.discountPrice
+                      formData.price && formData.discountPrice && Number(formData.discountPrice) < Number(formData.price)
                         ? `Saves ₹${(Number(formData.price) - Number(formData.discountPrice)).toLocaleString()}`
                         : ''
                     }
@@ -502,7 +569,18 @@ const ProductsPage = () => {
                     min="1"
                     max="99"
                     value={formData.discountPercentage}
-                    onChange={(e) => handleDiscountPercentageChange(e.target.value)}
+                    onBlur={() => setFormTouched((p) => ({ ...p, discountPercentage: true }))}
+                    onChange={(e) => {
+                      handleDiscountPercentageChange(e.target.value);
+                      if (!formTouched.discountPercentage) setFormTouched((p) => ({ ...p, discountPercentage: true }));
+                    }}
+                    error={
+                      formTouched.discountPercentage &&
+                      formData.discountPercentage &&
+                      (Number(formData.discountPercentage) <= 0 || Number(formData.discountPercentage) >= 100)
+                        ? 'Discount percentage must be between 1% and 99%'
+                        : ''
+                    }
                     placeholder="e.g. 20"
                     helperText={
                       formData.discountPercentage
@@ -608,6 +686,7 @@ const ProductsPage = () => {
             <Button
               variant="primary"
               type="submit"
+              disabled={!isProductFormValid || isSubmitting}
               loading={isSubmitting}
             >
               {modalMode === 'add' ? 'Save Product' : 'Update Changes'}

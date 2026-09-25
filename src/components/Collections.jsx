@@ -8,17 +8,17 @@ const Collections = () => {
   const navigate = useNavigate();
 
   return (
-    <section id="collections" className="bg-[#F9F6F0] py-20 lg:py-28 relative">
+    <section id="collections" className="bg-[#F9F6F0] py-16 md:py-24 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header: Title (Serif) & View All -> */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-12 sm:mb-16 pb-4 border-b border-[#DBC3A5]/40 gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 sm:mb-12 pb-4 border-b border-[#DBC3A5]/40 gap-4">
           <div>
             <div className="inline-flex items-center space-x-2 text-xs font-sans tracking-[0.25em] text-[#C8906D] uppercase font-semibold mb-2">
               <Sparkles className="w-3.5 h-3.5" />
               <span>Curated Portfolios</span>
             </div>
-            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-[#174A43] font-normal tracking-tight">
+            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-[#174A43] font-normal tracking-tight mb-4">
               Our Collections
             </h2>
           </div>

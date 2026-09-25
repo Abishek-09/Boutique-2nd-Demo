@@ -8,17 +8,17 @@ const AboutPage = () => {
   return (
     <div className="bg-[#F9F6F0] min-h-screen">
       {/* Top Banner */}
-      <section className="bg-[#123632] text-white py-20 lg:py-28 relative overflow-hidden">
+      <section className="bg-[#123632] text-white py-16 md:py-24 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-3xl">
             <div className="inline-flex items-center space-x-2 text-xs font-sans tracking-[0.3em] text-[#C8906D] uppercase font-semibold mb-4">
               <Feather className="w-4 h-4 text-[#C8906D]" />
               <span>THE LUMIÈRE MANIFESTO</span>
             </div>
-            <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl text-white font-normal tracking-tight leading-[1.15] mb-6">
+            <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl text-white font-normal tracking-tight leading-[1.15] mb-4">
               The Heritage of Conscious Grandeur
             </h1>
-            <p className="font-sans text-base sm:text-lg text-[#DBC3A5]/90 font-light leading-relaxed">
+            <p className="font-sans text-base sm:text-lg text-[#DBC3A5]/90 font-light leading-relaxed mb-6">
               Founded on the belief that true luxury is slow, mindful, and steeped in human soul. We honor centuries of royal Indian textile arts while refining them for the modern cosmopolitan lifestyle.
             </p>
           </div>
@@ -26,17 +26,17 @@ const AboutPage = () => {
       </section>
 
       {/* Narrative Split Section */}
-      <section className="py-20 lg:py-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+      <section className="py-16 md:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           
           <div className="lg:col-span-6 space-y-6">
             <div className="text-xs font-sans tracking-[0.25em] text-[#A95732] uppercase font-semibold">
               OUR ATELIER GENESIS
             </div>
-            <h2 className="font-serif text-3xl sm:text-4xl text-[#174A43] font-normal leading-tight">
+            <h2 className="font-serif text-3xl sm:text-4xl text-[#174A43] font-normal leading-tight mb-4">
               Reviving Ancient Weaves with Uncompromising Contemporary Precision
             </h2>
-            <div className="space-y-4 font-sans text-base text-[#383028]/80 font-light leading-relaxed">
+            <div className="space-y-4 font-sans text-base text-[#383028]/80 font-light leading-relaxed mb-6">
               <p>
                 Lumière was founded in 2018 in Mumbai’s historic Colaba district. What began as a personal quest to preserve the endangered art of pure metal wire zardozi embroidery has grown into an internationally acclaimed haute couture sanctuary.
               </p>
@@ -45,18 +45,18 @@ const AboutPage = () => {
               </p>
             </div>
 
-            <div className="pt-4 flex items-center space-x-4">
+            <div className="pt-2 flex flex-wrap items-center gap-4">
               <button
                 type="button"
                 onClick={() => navigate('/shop')}
-                className="px-8 py-3.5 rounded-xl bg-[#A95732] hover:bg-[#8f4320] text-white font-sans text-xs uppercase tracking-widest font-semibold shadow-copper transition-all ring-1 ring-[#DBC3A5]/40"
+                className="px-8 py-3.5 rounded-xl bg-[#A95732] hover:bg-[#8f4320] text-white font-sans text-xs uppercase tracking-widest font-semibold shadow-copper transition-all duration-300 hover:scale-[1.02] ring-1 ring-[#DBC3A5]/40"
               >
                 Explore The Archive
               </button>
               <button
                 type="button"
                 onClick={() => navigate('/contact')}
-                className="px-6 py-3.5 rounded-xl border border-[#174A43]/30 text-[#174A43] hover:bg-[#174A43] hover:text-white font-sans text-xs uppercase tracking-widest font-semibold transition-all"
+                className="px-6 py-3.5 rounded-xl border border-[#174A43]/30 text-[#174A43] hover:bg-[#174A43] hover:text-white font-sans text-xs uppercase tracking-widest font-semibold transition-all duration-300 hover:scale-[1.02]"
               >
                 Book Atelier Appointment
               </button>
@@ -77,7 +77,7 @@ const AboutPage = () => {
       </section>
 
       {/* 4 Pillars of Lumière */}
-      <section className="bg-white py-20 border-y border-[#DBC3A5]/40">
+      <section className="bg-white py-16 md:py-24 border-y border-[#DBC3A5]/40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
             <span className="text-xs font-sans tracking-[0.25em] text-[#C8906D] uppercase font-semibold">

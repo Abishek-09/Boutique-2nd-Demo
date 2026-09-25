@@ -236,10 +236,10 @@ const OffersPage = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: index * 0.05 }}
-                  className="group bg-white rounded-2xl overflow-hidden border border-[#DBC3A5]/40 shadow-sm hover:shadow-luxury transition-all duration-300 flex flex-col"
+                  className="group bg-white rounded-2xl overflow-hidden border border-[#DBC3A5]/40 shadow-sm hover:shadow-luxury transition-all duration-300 flex flex-col h-full"
                 >
                   {/* Image Container with Badges & Actions */}
-                  <div className="relative aspect-[3/4] overflow-hidden bg-gray-100">
+                  <div className="relative aspect-[3/4] overflow-hidden bg-gray-100 flex-shrink-0">
                     <img
                       src={product.image}
                       alt={product.name}
@@ -268,7 +268,7 @@ const OffersPage = () => {
                       <button
                         type="button"
                         onClick={() => setQuickViewProduct(product)}
-                        className="px-4 py-2 rounded-xl bg-white/95 text-[#174A43] hover:bg-[#174A43] hover:text-white text-xs font-sans font-semibold uppercase tracking-wider flex items-center space-x-1.5 shadow-lg transition-all"
+                        className="px-4 py-2 rounded-xl bg-white/95 text-[#174A43] hover:bg-[#174A43] hover:text-white text-xs font-sans font-semibold uppercase tracking-wider flex items-center space-x-1.5 shadow-lg transition-all duration-300 hover:scale-[1.02]"
                       >
                         <Eye className="w-3.5 h-3.5" />
                         <span>Quick View</span>
@@ -290,22 +290,20 @@ const OffersPage = () => {
                       </p>
                     </div>
 
-                    {/* Price & Add to Bag: Original price strikethrough, discountPrice in bold Burnt Copper (#A95732) */}
-                    <div className="pt-3 border-t border-[#DBC3A5]/25 flex items-center justify-between">
-                      <div>
-                        <div className="flex items-baseline space-x-2">
-                          {/* Discounted price in bold Burnt Copper */}
-                          <span className="font-serif text-xl font-bold text-[#A95732]">
-                            ₹{discountPrice.toLocaleString()}
-                          </span>
-                          {/* Original price crossed out in red/terracotta/muted */}
-                          <span className="text-xs text-[#A95732]/70 line-through font-sans">
-                            ₹{originalPrice.toLocaleString()}
-                          </span>
-                        </div>
+                    {/* Price & Add to Bag: Original price strikethrough below standard/discounted price */}
+                    <div className="pt-3 border-t border-[#DBC3A5]/25 flex items-center justify-between gap-2 mt-auto">
+                      <div className="flex flex-col min-w-0">
+                        {/* Discounted / Standard selling price on top */}
+                        <span className="font-serif text-lg font-bold text-[#A95732] leading-none">
+                          ₹{discountPrice.toLocaleString()}
+                        </span>
+                        {/* Stricken / original price below standard price */}
+                        <span className="text-xs text-[#A95732]/70 line-through font-sans mt-1">
+                          ₹{originalPrice.toLocaleString()}
+                        </span>
                         {discountPercent > 0 && (
-                          <span className="text-[10px] font-sans text-[#C8906D] font-medium block">
-                            Flat {discountPercent}% Off Atelier Price
+                          <span className="text-[10px] font-sans text-[#C8906D] font-medium block mt-0.5 whitespace-nowrap">
+                            Flat {discountPercent}% Off
                           </span>
                         )}
                       </div>
@@ -313,10 +311,10 @@ const OffersPage = () => {
                       <button
                         type="button"
                         onClick={() => addToCart(product)}
-                        className="px-4 py-2 rounded-xl bg-[#A95732] hover:bg-[#8f4320] text-white text-xs font-sans font-semibold uppercase tracking-wider flex items-center space-x-1.5 transition-colors shadow-sm ring-1 ring-[#DBC3A5]/40"
+                        className="px-3.5 sm:px-4 py-2 rounded-xl bg-[#A95732] hover:bg-[#8f4320] text-white text-xs font-sans font-semibold uppercase tracking-wider flex items-center space-x-1.5 transition-all duration-300 shadow-sm ring-1 ring-[#DBC3A5]/40 hover:scale-[1.02] flex-shrink-0 whitespace-nowrap"
                       >
-                        <ShoppingBag className="w-3.5 h-3.5" />
-                        <span>Add to Bag</span>
+                        <ShoppingBag className="w-3.5 h-3.5 flex-shrink-0" />
+                        <span className="whitespace-nowrap">Add to Bag</span>
                       </button>
                     </div>
                   </div>
@@ -379,19 +377,21 @@ const OffersPage = () => {
                         {quickViewProduct.name}
                       </h3>
 
-                      {/* Strikethrough original and bold Burnt Copper discountPrice */}
-                      <div className="flex items-baseline space-x-2.5 mt-2">
-                        <span className="font-serif text-2xl font-bold text-[#A95732]">
-                          ₹{(quickViewProduct.discountPrice || quickViewProduct.price).toLocaleString()}
-                        </span>
-                        <span className="text-sm text-[#A95732]/70 line-through font-sans">
+                      {/* Strikethrough original below bold Burnt Copper discountPrice */}
+                      <div className="flex flex-col mt-2">
+                        <div className="flex items-center space-x-2">
+                          <span className="font-serif text-2xl font-bold text-[#A95732] leading-none">
+                            ₹{(quickViewProduct.discountPrice || quickViewProduct.price).toLocaleString()}
+                          </span>
+                          {quickViewProduct.discountPercentage && (
+                            <span className="text-xs bg-[#C8906D]/20 text-[#C8906D] px-2 py-0.5 rounded font-sans font-semibold">
+                              {quickViewProduct.discountPercentage}% OFF
+                            </span>
+                          )}
+                        </div>
+                        <span className="text-sm text-[#A95732]/70 line-through font-sans mt-1">
                           ₹{quickViewProduct.price.toLocaleString()}
                         </span>
-                        {quickViewProduct.discountPercentage && (
-                          <span className="text-xs bg-[#C8906D]/20 text-[#C8906D] px-2 py-0.5 rounded font-sans font-semibold">
-                            {quickViewProduct.discountPercentage}% OFF
-                          </span>
-                        )}
                       </div>
 
                       <p className="text-xs font-sans text-[#383028]/80 mt-4 leading-relaxed font-light">

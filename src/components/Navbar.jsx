@@ -43,7 +43,7 @@ const Navbar = () => {
           isScrolled ? 'shadow-luxury py-3 border-b border-[#DBC3A5]/15' : 'py-5'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full px-4 sm:px-8 lg:px-12 xl:px-14">
           <div className="flex items-center justify-between">
             {/* Left: Logo */}
             <Link to="/" className="group flex flex-col items-start focus:outline-none">
