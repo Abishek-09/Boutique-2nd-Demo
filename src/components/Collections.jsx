@@ -1,47 +1,12 @@
 import React from 'react';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useNavigate, Link } from 'react-router-dom';
+import { collectionsList } from '../data/products';
 
-const collectionsData = [
-  {
-    id: 'women',
-    name: 'Women',
-    fullName: "Women's Haute Couture",
-    count: '48 Designs',
-    description: 'Handcrafted sarees, royal lehengas, and ethereal silhouettes.',
-    image: '/images/women.jpg',
-    tag: 'Bestseller',
-  },
-  {
-    id: 'men',
-    name: 'Men',
-    fullName: "Gentlemen's Royal Edit",
-    count: '24 Designs',
-    description: 'Bespoke bandhgalas, tailored achkans, and embroidered kurtas.',
-    image: '/images/men.jpg',
-    tag: 'New Edition',
-  },
-  {
-    id: 'jewellery',
-    name: 'Jewellery',
-    fullName: 'Fine Heirloom Jewellery',
-    count: '32 Masterpieces',
-    description: 'Natural Colombian emeralds, polki diamonds, and 22k gold.',
-    image: '/images/jewellery.jpg',
-    tag: 'Handcrafted',
-  },
-  {
-    id: 'accessories',
-    name: 'Accessories',
-    fullName: 'Artisanal Accessories',
-    count: '19 Curations',
-    description: 'Antique zardozi clutches, pashmina stoles, and heirloom brooches.',
-    image: '/images/accessories.jpg',
-    tag: 'Atelier Craft',
-  },
-];
+const Collections = () => {
+  const navigate = useNavigate();
 
-const Collections = ({ onSelectCategory }) => {
   return (
     <section id="collections" className="bg-[#F9F6F0] py-20 lg:py-28 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -58,18 +23,19 @@ const Collections = ({ onSelectCategory }) => {
             </h2>
           </div>
 
-          <a
-            href="#collections"
+          <Link
+            to="/shop"
             className="group inline-flex items-center space-x-2 text-sm sm:text-base font-sans tracking-wider uppercase font-medium text-[#A95732] hover:text-[#174A43] transition-colors"
           >
             <span>View All</span>
             <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1.5" />
-          </a>
+          </Link>
         </div>
 
-        {/* 4-Column Image Grid with scale-up hover effect & subtle dark gradient overlay */}
+        {/* 4 Image Cards: Women, Men, Jewellery, Accessories */}
+        {/* Action: Clicking a card navigates to /shop?category=women (filtered shop page) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-          {collectionsData.map((item, index) => (
+          {collectionsList.map((item, index) => (
             <motion.div
               key={item.id}
               initial={{ opacity: 0, y: 30 }}
@@ -77,7 +43,7 @@ const Collections = ({ onSelectCategory }) => {
               viewport={{ once: true, margin: '-50px' }}
               transition={{ duration: 0.6, delay: index * 0.12 }}
               className="group relative cursor-pointer"
-              onClick={() => onSelectCategory && onSelectCategory(item)}
+              onClick={() => navigate(`/shop?category=${item.routeParam}`)}
             >
               {/* Card Container with smooth scale & rounded corners */}
               <div className="relative aspect-[3/4] w-full rounded-2xl overflow-hidden shadow-soft group-hover:shadow-luxury transition-all duration-500 bg-[#174A43]">

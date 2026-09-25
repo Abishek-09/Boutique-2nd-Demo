@@ -1,5 +1,6 @@
 import React from 'react';
 import { ArrowUp, Instagram, Facebook, Twitter, Pin as Pinterest, MapPin, Phone, Mail } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   const scrollToTop = () => {
@@ -7,19 +8,19 @@ const Footer = () => {
   };
 
   const navLinks = [
-    { name: 'Home', href: '#home' },
-    { name: 'Shop', href: '#collections' },
-    { name: 'Collections', href: '#collections' },
-    { name: 'About', href: '#our-story' },
-    { name: 'Contact', href: '#newsletter' },
+    { name: 'Home', path: '/' },
+    { name: 'Shop', path: '/shop' },
+    { name: 'Collections', path: '/collections' },
+    { name: 'About', path: '/about' },
+    { name: 'Contact', path: '/contact' },
   ];
 
   const clientCare = [
-    { name: 'Private Atelier Appointments', href: '#contact' },
-    { name: 'Bespoke Sizing & Customization', href: '#contact' },
-    { name: 'Silk Care & Preservation', href: '#contact' },
-    { name: 'Worldwide Shipping & Customs', href: '#contact' },
-    { name: 'Heirloom Certificate Guarantee', href: '#contact' },
+    { name: 'Private Atelier Appointments', path: '/contact' },
+    { name: 'Bespoke Sizing & Customization', path: '/contact' },
+    { name: 'Silk Care & Preservation', path: '/about' },
+    { name: 'Worldwide Shipping & Customs', path: '/contact' },
+    { name: 'Heirloom Certificate Guarantee', path: '/about' },
   ];
 
   return (
@@ -29,16 +30,16 @@ const Footer = () => {
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-12 pb-16 border-b border-[#DBC3A5]/15">
           
-          {/* Left Column: Brand & Tagline (5 cols) */}
+          {/* Left Column: Brand & Tagline */}
           <div className="lg:col-span-5 space-y-4">
-            <div className="flex flex-col items-start">
-              <span className="font-serif text-3xl sm:text-4xl text-white tracking-[0.22em] font-medium uppercase">
+            <Link to="/" className="flex flex-col items-start focus:outline-none">
+              <span className="font-serif text-3xl sm:text-4xl text-white tracking-[0.22em] font-medium uppercase hover:text-[#DBC3A5] transition-colors">
                 LUMIERE
               </span>
               <span className="text-[10px] tracking-[0.35em] text-[#DBC3A5]/80 font-sans uppercase">
                 FASHION &amp; LIFESTYLE
               </span>
-            </div>
+            </Link>
 
             <p className="font-sans text-sm text-[#DBC3A5]/85 max-w-sm font-light leading-relaxed pt-2">
               Elevating bespoke elegance &amp; mindful craftsmanship since 2018. Handcrafted couture, heirloom silks, and timeless living created in harmony with master artisan communities.
@@ -60,7 +61,7 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Center Column: Navigation & Client Care (4 cols) */}
+          {/* Center Column: Navigation & Client Care */}
           <div className="lg:col-span-4 grid grid-cols-2 gap-8">
             <div>
               <h4 className="font-serif text-base font-medium text-white tracking-wider mb-4 border-b border-[#DBC3A5]/20 pb-2">
@@ -69,12 +70,13 @@ const Footer = () => {
               <ul className="space-y-2.5">
                 {navLinks.map((link) => (
                   <li key={link.name}>
-                    <a
-                      href={link.href}
+                    {/* Action: Links navigate to respective pages */}
+                    <Link
+                      to={link.path}
                       className="font-sans text-xs uppercase tracking-widest text-[#DBC3A5]/80 hover:text-white transition-colors"
                     >
                       {link.name}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -87,19 +89,19 @@ const Footer = () => {
               <ul className="space-y-2.5">
                 {clientCare.map((item) => (
                   <li key={item.name}>
-                    <a
-                      href={item.href}
+                    <Link
+                      to={item.path}
                       className="font-sans text-xs text-[#DBC3A5]/80 hover:text-white transition-colors block"
                     >
                       {item.name}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
             </div>
           </div>
 
-          {/* Right Column: Social Icons & Atelier Notice (3 cols) */}
+          {/* Right Column: Social Icons & Certificate Notice */}
           <div className="lg:col-span-3 space-y-5">
             <h4 className="font-serif text-base font-medium text-white tracking-wider border-b border-[#DBC3A5]/20 pb-2">
               Follow Our Atelier
@@ -108,7 +110,7 @@ const Footer = () => {
               Follow our visual diary for behind-the-scenes glimpses into our hand-weaving ateliers and private runway showcases.
             </p>
 
-            {/* Social Icons (Instagram, Facebook, Twitter, Pinterest) */}
+            {/* Action: Social icons open in a new tab */}
             <div className="flex items-center space-x-3 pt-1">
               <a
                 href="https://instagram.com"
@@ -165,11 +167,11 @@ const Footer = () => {
           <p>© 2024 Lumiere. All rights reserved.</p>
 
           <div className="flex items-center space-x-6">
-            <a href="#privacy" className="hover:text-white transition-colors">Privacy Policy</a>
+            <Link to="/about" className="hover:text-white transition-colors">Privacy Policy</Link>
             <span className="text-[#DBC3A5]/30">•</span>
-            <a href="#terms" className="hover:text-white transition-colors">Terms of Service</a>
+            <Link to="/about" className="hover:text-white transition-colors">Terms of Service</Link>
             <span className="text-[#DBC3A5]/30">•</span>
-            <a href="#sitemap" className="hover:text-white transition-colors">Atelier Sitemap</a>
+            <Link to="/collections" className="hover:text-white transition-colors">Atelier Lookbook</Link>
           </div>
 
           <button

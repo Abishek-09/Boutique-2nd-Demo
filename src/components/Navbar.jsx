@@ -1,35 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { Search, User, ShoppingBag, Menu, X, ArrowRight } from 'lucide-react';
+import { NavLink, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useShop } from '../context/ShopContext';
 
-const Navbar = ({ onOpenCart, onOpenSearch, cartCount = 2 }) => {
+const Navbar = () => {
+  const { cartCount, setIsCartOpen, setIsSearchOpen, setIsAuthModalOpen, user } = useShop();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+      setIsScrolled(window.scrollY > 20);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const navLinks = [
-    { name: 'Home', href: '#home' },
-    { name: 'Shop', href: '#collections' },
-    { name: 'Collections', href: '#collections' },
-    { name: 'About', href: '#our-story' },
-    { name: 'Contact', href: '#newsletter' },
+    { name: 'Home', path: '/' },
+    { name: 'Shop', path: '/shop' },
+    { name: 'Collections', path: '/collections' },
+    { name: 'About', path: '/about' },
+    { name: 'Contact', path: '/contact' },
   ];
 
   return (
     <>
       {/* Top Banner / Announcement Bar */}
-      <div className="bg-[#123632] text-[#DBC3A5] text-xs py-2 px-4 text-center font-medium tracking-widest uppercase border-b border-[#DBC3A5]/10">
+      <div className="bg-[#123632] text-[#DBC3A5] text-[11px] sm:text-xs py-2 px-4 text-center font-medium tracking-widest uppercase border-b border-[#DBC3A5]/10">
         Complimentary Bespoke Consultation &amp; Worldwide Shipping on Orders Above ₹1,999
       </div>
 
@@ -41,52 +40,71 @@ const Navbar = ({ onOpenCart, onOpenSearch, cartCount = 2 }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             {/* Left: Logo */}
-            <a href="#home" className="group flex flex-col items-start focus:outline-none">
+            <Link to="/" className="group flex flex-col items-start focus:outline-none">
               <span className="font-serif text-2xl sm:text-3xl text-white tracking-[0.22em] font-medium uppercase group-hover:text-[#DBC3A5] transition-colors">
                 LUMIERE
               </span>
               <span className="text-[9px] sm:text-[10px] tracking-[0.35em] text-[#DBC3A5]/80 font-sans uppercase -mt-0.5">
                 FASHION &amp; LIFESTYLE
               </span>
-            </a>
+            </Link>
 
-            {/* Center: Desktop Navigation Links */}
+            {/* Center: React Router Desktop Navigation Links */}
             <nav className="hidden md:flex items-center space-x-8 lg:space-x-10">
               {navLinks.map((link) => (
-                <a
+                <NavLink
                   key={link.name}
-                  href={link.href}
-                  className="text-white/90 hover:text-[#DBC3A5] text-sm tracking-widest uppercase font-sans font-normal transition-colors relative py-1 group"
+                  to={link.path}
+                  className={({ isActive }) =>
+                    `text-sm tracking-widest uppercase font-sans font-normal transition-colors relative py-1 group ${
+                      isActive ? 'text-[#DBC3A5]' : 'text-white/90 hover:text-[#DBC3A5]'
+                    }`
+                  }
                 >
-                  {link.name}
-                  <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-[#C8906D] transition-all duration-300 group-hover:w-full" />
-                </a>
+                  {({ isActive }) => (
+                    <>
+                      <span>{link.name}</span>
+                      <span
+                        className={`absolute bottom-0 left-0 h-[1.5px] bg-[#C8906D] transition-all duration-300 ${
+                          isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                        }`}
+                      />
+                    </>
+                  )}
+                </NavLink>
               ))}
             </nav>
 
-            {/* Right: Icons (Search, User, Shopping Cart) */}
+            {/* Right: Actions (Search, User, Shopping Cart) */}
             <div className="flex items-center space-x-4 sm:space-x-6 text-white">
+              {/* Action: Search opens full-screen overlay */}
               <button
                 type="button"
-                onClick={onOpenSearch}
-                aria-label="Search collection"
+                onClick={() => setIsSearchOpen(true)}
+                aria-label="Open search bar"
                 className="p-1.5 text-white/90 hover:text-[#DBC3A5] hover:scale-105 transition-transform focus:outline-none"
               >
                 <Search className="w-5 h-5 stroke-[1.5]" />
               </button>
 
+              {/* Action: User opens Login/Register modal */}
               <button
                 type="button"
-                aria-label="User Account"
-                className="hidden sm:block p-1.5 text-white/90 hover:text-[#DBC3A5] hover:scale-105 transition-transform focus:outline-none"
+                onClick={() => setIsAuthModalOpen(true)}
+                aria-label="Open Account Modal"
+                className="p-1.5 text-white/90 hover:text-[#DBC3A5] hover:scale-105 transition-transform focus:outline-none relative"
               >
                 <User className="w-5 h-5 stroke-[1.5]" />
+                {user && (
+                  <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-[#C8906D]" />
+                )}
               </button>
 
+              {/* Action: Cart opens slide-out side drawer */}
               <button
                 type="button"
-                onClick={onOpenCart}
-                aria-label="Shopping Cart"
+                onClick={() => setIsCartOpen(true)}
+                aria-label="Open Shopping Bag"
                 className="p-1.5 text-white/90 hover:text-[#DBC3A5] hover:scale-105 transition-transform focus:outline-none relative"
               >
                 <ShoppingBag className="w-5 h-5 stroke-[1.5]" />
@@ -122,18 +140,23 @@ const Navbar = ({ onOpenCart, onOpenSearch, cartCount = 2 }) => {
             >
               <div className="px-6 py-6 space-y-4">
                 {navLinks.map((link) => (
-                  <a
+                  <NavLink
                     key={link.name}
-                    href={link.href}
+                    to={link.path}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block text-white/90 hover:text-[#DBC3A5] text-base tracking-widest uppercase font-sans py-2 border-b border-[#DBC3A5]/10"
+                    className={({ isActive }) =>
+                      `block text-base tracking-widest uppercase font-sans py-2 border-b border-[#DBC3A5]/10 ${
+                        isActive ? 'text-[#DBC3A5] font-medium' : 'text-white/90 hover:text-[#DBC3A5]'
+                      }`
+                    }
                   >
                     {link.name}
-                  </a>
+                  </NavLink>
                 ))}
-                <div className="pt-2 flex items-center justify-between text-sm text-[#DBC3A5]">
-                  <span>Atelier Concierge: +91 98765 43210</span>
-                  <ArrowRight className="w-4 h-4" />
+                
+                <div className="pt-2 flex items-center justify-between text-xs text-[#DBC3A5]">
+                  <span>Concierge: +91 (022) 8492-3400</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </div>
               </div>
             </motion.div>
