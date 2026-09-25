@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Lock, Mail, Shield, Sparkles, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
-import Button from '../components/ui/Button';
-import Input from '../components/ui/Input';
+import Button from '../components/UI/Button';
+import Input from '../components/UI/Input';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');

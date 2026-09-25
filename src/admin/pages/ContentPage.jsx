@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { FileEdit, Save, Upload, Sparkles, Image as ImageIcon, Eye } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
-import Button from '../components/ui/Button';
-import Input from '../components/ui/Input';
+import Button from '../components/UI/Button';
+import Input from '../components/UI/Input';
 
 const ContentPage = () => {
   const { cms, saveCMS } = useAdmin();

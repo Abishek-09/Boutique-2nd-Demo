@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { ShoppingBag, Eye, Calendar, MapPin, Mail, Phone, Clock, CheckCircle } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
-import Table from '../components/ui/Table';
-import Modal from '../components/ui/Modal';
-import Button from '../components/ui/Button';
+import Table from '../components/UI/Table';
+import Modal from '../components/UI/Modal';
+import Button from '../components/UI/Button';
 
 const OrdersPage = () => {
   const { orders, changeOrderStatus, loading } = useAdmin();

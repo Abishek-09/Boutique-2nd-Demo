@@ -12,10 +12,10 @@ import {
   Package,
 } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
-import Button from '../components/ui/Button';
-import Input from '../components/ui/Input';
-import Modal from '../components/ui/Modal';
-import Table from '../components/ui/Table';
+import Button from '../components/UI/Button';
+import Input from '../components/UI/Input';
+import Modal from '../components/UI/Modal';
+import Table from '../components/UI/Table';
 
 const categories = [
   { id: 'women', label: "Women's Couture" },

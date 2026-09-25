@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Users, Download, Search, Mail, Sparkles } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
-import Table from '../components/ui/Table';
-import Button from '../components/ui/Button';
+import Table from '../components/UI/Table';
+import Button from '../components/UI/Button';
 
 const SubscribersPage = () => {
   const { subscribers, exportSubscribers, loading } = useAdmin();
