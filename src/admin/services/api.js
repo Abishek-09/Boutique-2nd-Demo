@@ -155,6 +155,63 @@ const initLocalStorage = () => {
     };
     localStorage.setItem('lumiere_admin_banner', JSON.stringify(defaultBanner));
   }
+
+  // Initial mock notifications
+  if (!localStorage.getItem('lumiere_admin_notifications')) {
+    const mockNotifications = [
+      {
+        id: 'notif-1',
+        title: 'New High-Value Order #LUM-741982',
+        message: 'Meera Chawla placed an order of ₹57,800 for Heirloom Polki Choker.',
+        timestamp: '15m ago',
+        createdAt: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
+        type: 'order',
+        read: false,
+        link: '/admin/orders',
+      },
+      {
+        id: 'notif-2',
+        title: 'Low Inventory Alert',
+        message: 'Artisanal Zardozi Minaudière has only 2 units left in atelier stock.',
+        timestamp: '45m ago',
+        createdAt: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
+        type: 'inventory',
+        read: false,
+        link: '/admin/products',
+      },
+      {
+        id: 'notif-3',
+        title: 'New VIP Patron Subscribed',
+        message: 'evelyn.vogue@hauteluxury.com subscribed to private atelier previews.',
+        timestamp: '2h ago',
+        createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+        type: 'subscriber',
+        read: false,
+        link: '/admin/subscribers',
+      },
+      {
+        id: 'notif-4',
+        title: 'Consignment Dispatched #LUM-882104',
+        message: 'Royal Emerald Brocade Bandhgala dispatched to Mumbai for Vikramaditya Roy.',
+        timestamp: 'Yesterday',
+        createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+        type: 'shipping',
+        read: true,
+        link: '/admin/orders',
+      },
+      {
+        id: 'notif-5',
+        title: 'Festive Campaign Active',
+        message: 'Complimentary Silk Stole banner is live and running across store.',
+        timestamp: '2d ago',
+        createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(),
+        type: 'system',
+        read: true,
+        link: '/admin/offers',
+      },
+    ];
+    localStorage.setItem('lumiere_admin_notifications', JSON.stringify(mockNotifications));
+  }
 };
 
 initLocalStorage();
@@ -351,6 +408,56 @@ export const adminService = {
   async updateOfferBanner(bannerData) {
     localStorage.setItem('lumiere_admin_banner', JSON.stringify(bannerData));
     return bannerData;
+  },
+
+  // Notifications API
+  async getNotifications() {
+    let stored = localStorage.getItem('lumiere_admin_notifications');
+    if (!stored) {
+      initLocalStorage();
+      stored = localStorage.getItem('lumiere_admin_notifications');
+    }
+    return stored ? JSON.parse(stored) : [];
+  },
+
+  async markNotificationRead(id) {
+    const notifications = await this.getNotifications();
+    const updated = notifications.map((n) => (n.id === id ? { ...n, read: true } : n));
+    localStorage.setItem('lumiere_admin_notifications', JSON.stringify(updated));
+    return updated;
+  },
+
+  async markAllNotificationsRead() {
+    const notifications = await this.getNotifications();
+    const updated = notifications.map((n) => ({ ...n, read: true }));
+    localStorage.setItem('lumiere_admin_notifications', JSON.stringify(updated));
+    return updated;
+  },
+
+  async deleteNotification(id) {
+    const notifications = await this.getNotifications();
+    const updated = notifications.filter((n) => n.id !== id);
+    localStorage.setItem('lumiere_admin_notifications', JSON.stringify(updated));
+    return updated;
+  },
+
+  async clearNotifications() {
+    localStorage.setItem('lumiere_admin_notifications', JSON.stringify([]));
+    return [];
+  },
+
+  async addNotification(notificationData) {
+    const notifications = await this.getNotifications();
+    const newNotif = {
+      id: `notif-${Date.now()}`,
+      timestamp: 'Just now',
+      createdAt: new Date().toISOString(),
+      read: false,
+      ...notificationData,
+    };
+    const updated = [newNotif, ...notifications];
+    localStorage.setItem('lumiere_admin_notifications', JSON.stringify(updated));
+    return updated;
   },
 };
 

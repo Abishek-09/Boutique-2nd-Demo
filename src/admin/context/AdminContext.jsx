@@ -9,6 +9,7 @@ export const AdminProvider = ({ children }) => {
   const [orders, setOrders] = useState([]);
   const [subscribers, setSubscribers] = useState([]);
   const [cms, setCms] = useState({});
+  const [notifications, setNotifications] = useState([]);
   const [offerBanner, setOfferBanner] = useState({
     enabled: true,
     text: 'Festive Season Grandeur: Complimentary Silk Stole on Orders Above ₹20,000 | Code: LUMIERE20',
@@ -28,18 +29,20 @@ export const AdminProvider = ({ children }) => {
   const fetchAllData = async () => {
     try {
       setLoading(true);
-      const [prods, ords, subs, cmsData, bannerData] = await Promise.all([
+      const [prods, ords, subs, cmsData, bannerData, notifs] = await Promise.all([
         adminService.getProducts(),
         adminService.getOrders(),
         adminService.getSubscribers(),
         adminService.getContent(),
         adminService.getOfferBanner(),
+        adminService.getNotifications(),
       ]);
       setProducts(prods);
       setOrders(ords);
       setSubscribers(subs);
       setCms(cmsData);
       setOfferBanner(bannerData);
+      setNotifications(notifs || []);
     } catch (err) {
       showToast('Error loading atelier data.', 'error');
     } finally {
@@ -151,6 +154,56 @@ export const AdminProvider = ({ children }) => {
     showToast('Subscribers CSV exported successfully.');
   };
 
+  // Notification actions
+  const unreadNotificationsCount = notifications.filter((n) => !n.read).length;
+
+  const markNotificationAsRead = async (id) => {
+    try {
+      const updated = await adminService.markNotificationRead(id);
+      setNotifications(updated);
+    } catch (err) {
+      console.error('Failed to mark notification as read:', err);
+    }
+  };
+
+  const markAllNotificationsAsRead = async () => {
+    try {
+      const updated = await adminService.markAllNotificationsRead();
+      setNotifications(updated);
+      showToast('All notifications marked as read.');
+    } catch (err) {
+      console.error('Failed to mark all notifications as read:', err);
+    }
+  };
+
+  const removeNotification = async (id) => {
+    try {
+      const updated = await adminService.deleteNotification(id);
+      setNotifications(updated);
+    } catch (err) {
+      console.error('Failed to delete notification:', err);
+    }
+  };
+
+  const clearAllNotifications = async () => {
+    try {
+      const updated = await adminService.clearNotifications();
+      setNotifications(updated);
+      showToast('All notifications cleared.');
+    } catch (err) {
+      console.error('Failed to clear notifications:', err);
+    }
+  };
+
+  const pushNotification = async (notifData) => {
+    try {
+      const updated = await adminService.addNotification(notifData);
+      setNotifications(updated);
+    } catch (err) {
+      console.error('Failed to add notification:', err);
+    }
+  };
+
   return (
     <AdminContext.Provider
       value={{
@@ -163,6 +216,13 @@ export const AdminProvider = ({ children }) => {
         subscribers,
         cms,
         offerBanner,
+        notifications,
+        unreadNotificationsCount,
+        markNotificationAsRead,
+        markAllNotificationsAsRead,
+        removeNotification,
+        clearAllNotifications,
+        pushNotification,
         loading,
         toast,
         showToast,
